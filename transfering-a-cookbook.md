@@ -1,4 +1,4 @@
-# Transfering a Cookbook to the Chef Brigade
+# Transferring a Cookbook to the Chef Brigade
 
 Got a cookbook you'd like help with? We'd love to help!
 
@@ -11,7 +11,7 @@ You'll need:
 - Code Repository URL
 - Supermarket cookbook name
 
-## Transfering the code
+## Transferring the code
 
 We're assuming the cookbook code is already in its own repo in GitHub. If it's in a shared repo, or hosted elsewhere, it'll require a slightly different approach.
 
@@ -23,10 +23,10 @@ We're assuming the cookbook code is already in its own repo in GitHub. If it's i
 - Click **I understand, transfer this repository.**
 
 
-## Transfering the cookbook in Supermarket
+## Transferring the cookbook in Supermarket
 
 - From the cookbook home page in Supermarket
-- Click **Manage Cookbook** and select ** Transfer Ownership**
+- Click **Manage Cookbook** and select **Transfer Ownership**
 - Enter `chef-brigade` and click **Transfer**
 
 
