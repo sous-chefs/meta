@@ -1,10 +1,10 @@
 # Leaving Chef Brigade
 
-If a maintainer want to stop or leave, it's cool. We'll gladly point to the project's new home and keep an archive of the old history.
+If a maintainer wants to stop or leave, it's cool. We'll gladly point to the project's new home and keep an archive of the old history.
 
 ## When the cookbook is for end-of-life tech
 
-If a cookbook is for software that's no longer feasable to keep running, like old open source, old commercial stuff, anything that can't be downloaded; then we update the cookbook `README.md` to mark as deprecated.
+If a cookbook is for software that's no longer feasible to keep running, like old open source, old commercial stuff, anything that can't be downloaded; then we update the cookbook `README.md` to mark as deprecated.
 
 
 ## When the cookbook is unused
@@ -13,7 +13,7 @@ If a cookbook seems entirely unused, we may want to stop claiming it is maintain
 
 ## When the maintainer wants to leave
 
-If someone objects to the project moving and wants to continue maintainance under the brigade, we add a prominent link to fork on the readme and continue development. People are generally not idiots, so if they have a reason to leave us we should support them.
+If someone objects to the project moving and wants to continue maintenance under the brigade, we add a prominent link to fork on the readme and continue development. People are generally not idiots, so if they have a reason to leave us we should support them.
 
 Otherwise we update the cookbook `README.md` to mark as relocated, at least pointing where the cookbook went.
 
