@@ -8,20 +8,39 @@ We need to work with the github repo owner and supermarket cookbook owner. If yo
 
 You'll need:
 
-- Code Repository URL
-- Supermarket cookbook name
+- `name` - base cookbook name
+- `repo_url` - code repository URL
+- `supermarket_name` - Supermarket cookbook name
 
 ## Transferring the code
 
-We're assuming the cookbook code is already in its own repo in GitHub. If it's in a shared repo, or hosted elsewhere, it'll require a slightly different approach.
+Cookbook code may live in a number of places, here's what to do when the code is:
 
+### From a single-cookbook repo in GitHub
 
-- From the repository home page in GitHub
+- From the `repo_url` in GitHub
 - Go to the **Settings** page
 - Scroll down to the **DangerZone** and click **Transfer**
 - Enter the appropriate **repo name** and for the **New owner's GitHub username or organization name** enter `chef-brigade`
 - Click **I understand, transfer this repository.**
 
+### From a monolithic repo in GitHub
+
+There's the script to extract a cookbook's history from a monolithic repo. Then upload to new repo under brigade.
+
+- Create a GitHub repo for the cookbook with owner:`chef-brigade` and name:`${name}-cookbook`
+- Clone the monolithic  to a local repo `git clone ${repo_url}`
+- Extract the history of the desired cookbook from the repo: `git filter-branch --tag-name-filter cat --prune-empty --subdirectory-filter ${name} -- --all`
+- Add the GitHub repo as a remote `git remote add brigade https://github.com/chef-brigade/${name}-cookbook.git`
+- Push `git push brigade --all` and `git push brigade --tags`
+
+This is adapted from “[How to extract a single file with its history from a git repository](https://gist.github.com/ssp/1663093)” by [ssp](https://github.com/ssp)
+
+### From a non-GitHub repo
+- Create a GitHub repo for the cookbook with owner:`chef-brigade` and name:`${name}-cookbook`
+- Clone the cookbook to a local repo `git clone ${repo_url}`
+- Add the GitHub repo as a remote `git remote add brigade https://github.com/chef-brigade/${name}-cookbook.git`
+- Push `git push brigade --all` and `git push brigade --tags`
 
 ## Transferring the cookbook in Supermarket
 
@@ -35,4 +54,4 @@ We're assuming the cookbook code is already in its own repo in GitHub. If it's i
 There are probably many references to the old URLs out there in the world. Some places to check
 
 - Update the `README.md` with a link to the current repo and supermarket page
-- Update the **Source URL** and **Issues URL** in supermarket
+- Update the `metadata.rb` with current `issues_url` and `source_url`
