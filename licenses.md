@@ -16,7 +16,7 @@ The preferred software license to publish the work of Chef Brigade is [Apache Li
 
 You can see the different licenses available here: http://choosealicense.com/
 
-How to add the license to a project:
+How to add the [Apache License](http://www.apache.org/licenses/LICENSE-2.0) to a project:
 
 - [The repositories **must have** a *LICENSE* file with the license.](#apache-license-license-file)
 - [The source code files should have the license in the header.](#apache-license-header)
@@ -252,13 +252,15 @@ limitations under the License.
 
 ### Apache License in the *README*
 
-The *README* file should have the license at the bottom:
+The *README* file should have the license at the bottom. For example:
 
 ```
 # License and Author
 
-**Original Author:** John Doe
-**Current Author:** [Chef Brigade Team](https://github.com/chef-brigade)
+**Original Author:** [John Doe](https://github.com/johndoe)
+**Author:** [Maintainer1](https://github.com/maintainer1) (<maintainer1@chefbrigade.io>)
+**Author:** [Maintainer2](https://github.com/maintainer2) (<maintainer2@chefbrigade.io>)
+**Contributors:** https://github.com/chef-brigade/unbound-cookbook/graphs/contributors
 **Copyright:** Copyright (c) 2015, Chef Brigade
 **License:** Apache License, Version 2.0
 
@@ -281,7 +283,7 @@ The preferred license for documentation published by Chef Brigade is [Creative C
 
 You can see the different licenses available here: http://creativecommons.org/choose/
 
-How to add the license to a project:
+How to add the [Creative Commons Attribution 4.0 International](http://creativecommons.org/licenses/by/4.0/) license to a project:
 
 - [The documentation repositories **must have** a *LICENSE* file with the license.](#creative-commons-attribution-40-International-license-file)
 - [The documentation files should have an icon with the license at the bottom.](#creative-commons-attribution-40-international-icon)
