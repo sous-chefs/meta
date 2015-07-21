@@ -54,4 +54,12 @@ This is adapted from “[How to extract a single file with its history from a gi
 There are probably many references to the old URLs out there in the world. Some places to check
 
 - Update the `README.md` with a link to the current repo and supermarket page
-- Update the `metadata.rb` with current `issues_url` and `source_url`
+- 
+In `metadata.rb`:
+```ruby
+source_url 'https://github.com/chef-brigade/{{name}}'
+issues_url 'https://github.com/chef-brigade/{{name}}/issues'
+maintainer 'Chef Brigade'
+maintainer_email 'help@chefbrigade.io'
+```
+
