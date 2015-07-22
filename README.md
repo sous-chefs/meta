@@ -5,10 +5,12 @@ Home for discussion about Chef Brigade, and various guides for cookbook authors.
 Live discussion happens on [![Slack](http://brigade-slackin.herokuapp.com/badge.svg)](https://brigade-slackin.herokuapp.com/)
 
 Cookbooks:
-- [`mongodb`](https://github.com/chef-brigade/mongodb-cookbook)
-- [`unbound`](https://github.com/chef-brigade/unbound-cookbook)
-- [`nano`](https://github.com/chef-brigade/nano-cookbook)
 - [`bsdcpio`](https://github.com/chef-brigade/bsdcpio_cookbook)
+- [`dhcp`](https://github.com/chef-brigade/dhcp-cook)
+- [`etcd`](https://github.com/chef-brigade/etcd-cookbook)
+- [`mongodb`](https://github.com/chef-brigade/mongodb-cookbook)
+- [`nano`](https://github.com/chef-brigade/nano-cookbook)
+- [`unbound`](https://github.com/chef-brigade/unbound-cookbook)
 
 
 Projects: 
