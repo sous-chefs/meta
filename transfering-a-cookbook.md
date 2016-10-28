@@ -49,6 +49,10 @@ This is adapted from “[How to extract a single file with its history from a gi
 - Enter `chef-brigade` and click **Transfer**
 
 
+## Ensure consistent cookbook name
+
+In case it isn't already, rename the repo to `https://github.com/chef-brigade/${name}-cookbook.git`
+
 ## Cleanup links to the old home
 
 There are probably many references to the old URLs out there in the world. Some places to check
