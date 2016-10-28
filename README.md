@@ -2,7 +2,7 @@
 
 Home for discussion about Chef Brigade, and various guides for cookbook authors.
 
-Live discussion happens on [![Chef Community Slack](https://community-slack.chef.io/badge.svg)](https://community-slack.chef.io/) in [#chef_brigade](https://chefcommunity.slack.com/messages/chef_brigade/).
+Live discussion happens on [![Chef Community Slack](https://community-slack.chef.io/badge.svg)](https://community-slack.chef.io/) in [#chef-brigade](https://chefcommunity.slack.com/messages/chef-brigade/).
 
 Cookbooks:
 - [`bsdcpio`](https://github.com/chef-brigade/bsdcpio_cookbook)
@@ -13,7 +13,7 @@ Cookbooks:
 - [`unbound`](https://github.com/chef-brigade/unbound-cookbook)
 
 
-Projects: 
+Projects:
 
 - [`cookbook-skeleton`](https://github.com/chef-brigade/cookbook-skeleton): default file structure, tooling
 - [`ops`](https://github.com/chef-brigade/ops): Operating chef-brigade infra & services
