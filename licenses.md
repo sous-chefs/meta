@@ -12,7 +12,7 @@
 
 ## Software License
 
-The preferred software license to publish the work of Chef Brigade is [Apache License](http://www.apache.org/licenses/LICENSE-2.0). All published work **must be** under an **Open Source Software license**.
+The preferred software license to publish the work of Sous Chefs is [Apache License](http://www.apache.org/licenses/LICENSE-2.0). All published work **must be** under an **Open Source Software license**.
 
 You can see the different licenses available here: http://choosealicense.com/
 
@@ -215,7 +215,7 @@ Put the license in a file called *LICENSE* in the root of the repository:
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright 2015, Chef Brigade
+   Copyright 2015, Sous Chefs
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -235,7 +235,7 @@ Put the license in a file called *LICENSE* in the root of the repository:
 This should be added to the header of each source file:
 
 ```
-Copyright 2015, Chef Brigade
+Copyright 2015, Sous Chefs
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -258,18 +258,18 @@ The *README* file should have the license at the bottom. For example:
 # License and Author
 
 **Original Author:** [John Doe](https://github.com/johndoe)
-**Author:** [Maintainer1](https://github.com/maintainer1) (<maintainer1@chefbrigade.io>)
-**Author:** [Maintainer2](https://github.com/maintainer2) (<maintainer2@chefbrigade.io>)
-**Contributors:** https://github.com/chef-brigade/unbound-cookbook/graphs/contributors
-**Copyright:** Copyright (c) 2015, Chef Brigade
+**Author:** [Maintainer1](https://github.com/maintainer1) (<maintainer1@souschefs.io>)
+**Author:** [Maintainer2](https://github.com/maintainer2) (<maintainer2@souschefs.io>)
+**Contributors:** https://github.com/sous-chefs/unbound-cookbook/graphs/contributors
+**Copyright:** Copyright (c) 2015, Sous Chefs
 **License:** Apache License, Version 2.0
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
-    
+
         http://www.apache.org/licenses/LICENSE-2.0
-    
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -279,7 +279,7 @@ The *README* file should have the license at the bottom. For example:
 
 ## Documentation License
 
-The preferred license for documentation published by Chef Brigade is [Creative Commons Attribution 4.0 International](http://creativecommons.org/licenses/by/4.0/). All documentation published **must be** under a [Creative Commons](http://creativecommons.org/) license.
+The preferred license for documentation published by Sous Chefs is [Creative Commons Attribution 4.0 International](http://creativecommons.org/licenses/by/4.0/). All documentation published **must be** under a [Creative Commons](http://creativecommons.org/) license.
 
 You can see the different licenses available here: http://creativecommons.org/choose/
 

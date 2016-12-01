@@ -1,4 +1,4 @@
-# Leaving Chef Brigade
+# Leaving Sous Chefs
 
 If a maintainer wants to stop or leave, it's cool. We'll gladly point to the project's new home and keep an archive of the old history.
 
@@ -13,13 +13,13 @@ If a cookbook seems entirely unused, we may want to stop claiming it is maintain
 
 ## When the maintainer wants to leave
 
-If someone objects to the project moving and wants to continue maintenance under the brigade, we add a prominent link to fork on the readme and continue development. People are generally not idiots, so if they have a reason to leave us we should support them.
+If someone objects to the project moving and wants to continue maintenance under the sous-chefs, we add a prominent link to fork on the readme and continue development. People are generally not idiots, so if they have a reason to leave us we should support them.
 
 Otherwise we update the cookbook `README.md` to mark as relocated, at least pointing where the cookbook went.
 
 ## Achiving
 
-Regardless of how a project leaves the Chef Brigade, we will keep a copy of the history available so anyone looking for it will know what's happened.
+Regardless of how a project leaves the Sous Chefs, we will keep a copy of the history available so anyone looking for it will know what's happened.
 
 ## Permanent removal
 

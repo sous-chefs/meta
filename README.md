@@ -1,6 +1,6 @@
 # meta
 
-Home for discussion about Chef Brigade, and various guides for cookbook authors.
+Home for discussion about Sous Chefs, and various guides for cookbook authors.
 
 Live discussion happens on [![Chef Community Slack](https://community-slack.chef.io/badge.svg)](https://community-slack.chef.io/) in [#sous-chefs](https://chefcommunity.slack.com/messages/sous-chefs/).
 
