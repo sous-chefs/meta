@@ -21,49 +21,48 @@ Cookbook code may live in a number of places, here's what to do when the code is
 - From the `repo_url` in GitHub
 - Go to the **Settings** page
 - Scroll down to the **DangerZone** and click **Transfer**
-- Enter the appropriate **repo name** and for the **New owner's GitHub username or organization name** enter `chef-brigade`
+- Enter the appropriate **repo name** and for the **New owner's GitHub username or organization name** enter `sous-chefs`
 - Click **I understand, transfer this repository.**
 
 ### From a monolithic repo in GitHub
 
-There's the script to extract a cookbook's history from a monolithic repo. Then upload to new repo under brigade.
+There's the script to extract a cookbook's history from a monolithic repo. Then upload to new repo under sous-chefs.
 
-- Create a GitHub repo for the cookbook with owner:`chef-brigade` and name:`${name}-cookbook`
+- Create a GitHub repo for the cookbook with owner:`sous-chefs` and name:`${name}-cookbook`
 - Clone the monolithic  to a local repo `git clone ${repo_url}`
 - Extract the history of the desired cookbook from the repo: `git filter-branch --tag-name-filter cat --prune-empty --subdirectory-filter ${name} -- --all`
-- Add the GitHub repo as a remote `git remote add brigade https://github.com/chef-brigade/${name}-cookbook.git`
-- Push `git push brigade --all` and `git push brigade --tags`
+- Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}-cookbook.git`
+- Push `git push sous-chefs --all` and `git push sous-chefs --tags`
 
 This is adapted from “[How to extract a single file with its history from a git repository](https://gist.github.com/ssp/1663093)” by [ssp](https://github.com/ssp)
 
 ### From a non-GitHub repo
-- Create a GitHub repo for the cookbook with owner:`chef-brigade` and name:`${name}-cookbook`
+- Create a GitHub repo for the cookbook with owner:`sous-chefs` and name:`${name}-cookbook`
 - Clone the cookbook to a local repo `git clone ${repo_url}`
-- Add the GitHub repo as a remote `git remote add brigade https://github.com/chef-brigade/${name}-cookbook.git`
-- Push `git push brigade --all` and `git push brigade --tags`
+- Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}-cookbook.git`
+- Push `git push sous-chefs --all` and `git push sous-chefs --tags`
 
 ## Transferring the cookbook in Supermarket
 
 - From the cookbook home page in Supermarket
 - Click **Manage Cookbook** and select **Transfer Ownership**
-- Enter `chef-brigade` and click **Transfer**
+- Enter `sous-chefs` and click **Transfer**
 
 
 ## Ensure consistent cookbook name
 
-In case it isn't already, rename the repo to `https://github.com/chef-brigade/${name}-cookbook.git`
+In case it isn't already, rename the repo to `https://github.com/sous-chefs/${name}-cookbook.git`
 
 ## Cleanup links to the old home
 
 There are probably many references to the old URLs out there in the world. Some places to check
 
 - Update the `README.md` with a link to the current repo and supermarket page
-- 
+-
 In `metadata.rb`:
 ```ruby
-source_url "https://github.com/chef-brigade/#{name}-cookbook" if respond_to?(:source_url)
-issues_url "https://github.com/chef-brigade/#{name}-cookbook/issues" if respond_to?(:issues_url)
+source_url "https://github.com/sous-chefs/#{name}-cookbook" if respond_to?(:source_url)
+issues_url "https://github.com/sous-chefs/#{name}-cookbook/issues" if respond_to?(:issues_url)
 maintainer 'Chef Brigade'
-maintainer_email 'help@chefbrigade.io'
+maintainer_email 'help@chefsous-chefs.io'
 ```
-
