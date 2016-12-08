@@ -66,5 +66,5 @@ In `metadata.rb`:
 source_url "https://github.com/sous-chefs/#{name}" if respond_to?(:source_url)
 issues_url "https://github.com/sous-chefs/#{name}/issues" if respond_to?(:issues_url)
 maintainer 'Sous Chefs'
-maintainer_email 'help@chefsous-chefs.io'
+maintainer_email 'help@sous-chefs.org'
 ```
