@@ -6,6 +6,8 @@ Got a cookbook you'd like help with? We'd love to help!
 
 We need to work with the github repo owner and supermarket cookbook owner. If you aren't this person, let us know and we'll try to contact them. If necessary, fine beverages and chocolate chip cookies may be provided to encourage them to work with us.
 
+When this is not possible please see [forking](https://github.com/sous-chefs/meta/blob/master/forking.md)
+
 You'll need:
 
 - `name` - base cookbook name
@@ -28,18 +30,18 @@ Cookbook code may live in a number of places, here's what to do when the code is
 
 There's the script to extract a cookbook's history from a monolithic repo. Then upload to new repo under sous-chefs.
 
-- Create a GitHub repo for the cookbook with owner:`sous-chefs` and name:`${name}-cookbook`
+- Create a GitHub repo for the cookbook with owner:`sous-chefs` and name:`${name}`
 - Clone the monolithic  to a local repo `git clone ${repo_url}`
 - Extract the history of the desired cookbook from the repo: `git filter-branch --tag-name-filter cat --prune-empty --subdirectory-filter ${name} -- --all`
-- Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}-cookbook.git`
+- Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}.git`
 - Push `git push sous-chefs --all` and `git push sous-chefs --tags`
 
 This is adapted from “[How to extract a single file with its history from a git repository](https://gist.github.com/ssp/1663093)” by [ssp](https://github.com/ssp)
 
 ### From a non-GitHub repo
-- Create a GitHub repo for the cookbook with owner:`sous-chefs` and name:`${name}-cookbook`
+- Create a GitHub repo for the cookbook with owner:`sous-chefs` and name:`${name}`
 - Clone the cookbook to a local repo `git clone ${repo_url}`
-- Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}-cookbook.git`
+- Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}.git`
 - Push `git push sous-chefs --all` and `git push sous-chefs --tags`
 
 ## Transferring the cookbook in Supermarket
@@ -51,7 +53,7 @@ This is adapted from “[How to extract a single file with its history from a gi
 
 ## Ensure consistent cookbook name
 
-In case it isn't already, rename the repo to `https://github.com/sous-chefs/${name}-cookbook.git`
+In case it isn't already, rename the repo to `https://github.com/sous-chefs/${name}.git`
 
 ## Cleanup links to the old home
 
@@ -61,8 +63,8 @@ There are probably many references to the old URLs out there in the world. Some 
 -
 In `metadata.rb`:
 ```ruby
-source_url "https://github.com/sous-chefs/#{name}-cookbook" if respond_to?(:source_url)
-issues_url "https://github.com/sous-chefs/#{name}-cookbook/issues" if respond_to?(:issues_url)
-maintainer 'Chef Brigade'
+source_url "https://github.com/sous-chefs/#{name}" if respond_to?(:source_url)
+issues_url "https://github.com/sous-chefs/#{name}/issues" if respond_to?(:issues_url)
+maintainer 'Sous Chefs'
 maintainer_email 'help@chefsous-chefs.io'
 ```
