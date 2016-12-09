@@ -1,0 +1,21 @@
+[
+  { "name": "Status: Abandoned", "color": "000000" },
+  { "name": "Status: Blocked", "color": "cc0000" },
+  { "name": "Status: In Progress", "color": "99ff99" },
+  { "name": "Status: On Hold", "color": "996633" },
+  { "name": "Status: Maintainer Review Needed", "color": "fbca04" },
+  { "name": "Status: Pending Contributor Response", "color": "cc00cc" },
+  { "name": "Priority: Low", "color": "4d0000" },
+  { "name": "Priority: Medium", "color": "800000" },
+  { "name": "Priority: High", "color": "b30000" },
+  { "name": "Priority: Critical", "color": "ff0000" },
+  { "name": "Type: Bug", "color": "e11d21" },
+  { "name": "Type: Maintenance", "color": "fbca04" },
+  { "name": "Type: Enhancement", "color": "84b6eb" },
+  { "name": "Type: Question", "color": "cc317c" },
+  { "name": "Type: Feature Request", "color": "cc317c" },
+  { "name": "Type: help wanted", "color": "cc317c" },
+  { "name": "Type: easy", "color": "cc317c" },
+  { "name": "Type: failing_test", "color": "cc317c" },
+  { "name": "Type: feedback_requested","color": "cc317c" }
+]
