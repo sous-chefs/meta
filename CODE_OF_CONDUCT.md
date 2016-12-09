@@ -1,6 +1,6 @@
-# Chef Brigade Contributor Code of Conduct
+# Sous Chefs Contributor Code of Conduct
 
-As contributors and maintainers of projects within Chef Brigade, we pledge to respect all people
+As contributors and maintainers of projects within Sous Chefs, we pledge to respect all people
 who contribute through reporting issues, posting feature requests, updating documentation,
 submitting pull requests or patches, and other activities.
 
