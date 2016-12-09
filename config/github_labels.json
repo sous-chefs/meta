@@ -14,8 +14,8 @@
   { "name": "Type: Enhancement", "color": "84b6eb" },
   { "name": "Type: Question", "color": "cc317c" },
   { "name": "Type: Feature Request", "color": "cc317c" },
-  { "name": "Type: help wanted", "color": "cc317c" },
-  { "name": "Type: easy", "color": "cc317c" },
-  { "name": "Type: failing_test", "color": "cc317c" },
-  { "name": "Type: feedback_requested","color": "cc317c" }
+  { "name": "Type: Help Wanted", "color": "cc317c" },
+  { "name": "Type: Easy", "color": "cc317c" },
+  { "name": "Type: Failing Test", "color": "cc317c" },
+  { "name": "Type: Feedback Requested","color": "cc317c" }
 ]
