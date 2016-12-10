@@ -19,7 +19,7 @@ Cookbooks:
 
 Projects:
 
-- [`cb-foodcritic-rules`](https://github.com/sous-chefs/cb-foodcritic-rules): Foodcritic rules for Sous Chefs cookbooks
+- [`sc-foodcritic-rules`](https://github.com/sous-chefs/sc-foodcritic-rules): Foodcritic rules for Sous Chefs cookbooks
 - [`cookbook-skeleton`](https://github.com/sous-chefs/cookbook-skeleton): default file structure, tooling
 - [`infra-chef-cfg`](https://github.com/sous-chefs/infra-chef-cfg): chef config for our servers
 - [`infra-tf-resources`](https://github.com/sous-chefs/infra-tf-resources): terraform config for provisioning
