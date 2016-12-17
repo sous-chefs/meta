@@ -6,8 +6,7 @@ All communication should be appropriate for a professional audience including pe
 
 Be kind to others. Do not insult or put down other attendees. Behave professionally. Remember that harassment and sexist, racist, or exclusionary jokes are not appropriate for Sous Chef.
 
-Attendees violating these rules may be asked to leave the organisationat the sole discretion of (The Sous Chefs board)[].
+Attendees violating these rules may be asked to leave the organisationat the sole discretion of [(The Sous Chefs board](https://github.com/sous-chefs/meta/blob/master/membership.md).
 
-Thank you for helping make this a welcoming, friendly event for all.
-
+Thank you for helping make this a welcoming, friendly community for all.
 

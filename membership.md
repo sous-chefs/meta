@@ -1,5 +1,11 @@
 # Membership
 
+## Board Members
+
+- Tim Smith (@tas50) 
+- Joseph Holsten (@josephholsten0
+- Dan Webb (@damacus)
+
 ## Owners
 
 Folks with complete control over the sous-chefs organization. This currently consists of cookbook maintainers.
