@@ -7,7 +7,7 @@ You should rename using the following naming schema:
 - Repository: `mongodb`
 
 
-# Use of provides to maintain resource compatiblity
+# Use of provides to maintain resource compatibility
 
 When forking a cookbook you can use Provides to force backwards compatible resource names. As an example this would allow you to fork a cookbook `foo` with a resource `bar` and maintain `foo_bar` even though the cookbook is now named sc_foo. This would be accomplished by adding this code to the `bar` resource:
 
