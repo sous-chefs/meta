@@ -48,16 +48,26 @@ This is adapted from “[How to extract a single file with its history from a gi
 - Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}.git`
 - Push `git push sous-chefs --all` and `git push sous-chefs --tags`
 
+## Have the proper Github user rights setup
+
+Once the cookbook has been transferred a Sous-Chefs board member can setup the proper permissions for the repo
+
+- Add a new Github team with the same name as the cookbook
+- Add maintainers to that group
+- Add that team to the repo with **Admin* privileges
+
 ## Transferring the cookbook in Supermarket
 
-- From the cookbook home page in Supermarket
-- Click **Manage Cookbook** and select **Transfer Ownership**
+- From the cookbook's page in Supermarket click **Manage Cookbook** and select **Transfer Ownership**
+- Make sure to check "Make current owner a collaborator?" to retain your access to the cookbook
 - Enter `sous-chefs` and click **Transfer**
-
 
 ## Ensure consistent cookbook name
 
 In case it isn't already, rename the repo to `https://github.com/sous-chefs/${name}.git`
+
+- From the repo page on Github click **Settings**
+- Under **Repository name** enter a new name and click **Rename**
 
 ## Cleanup links to the old home
 
