@@ -14,6 +14,10 @@ You'll need:
 - `repo_url` - code repository URL
 - `supermarket_name` - Supermarket cookbook name
 
+## Joining Sous-Chefs
+
+In order to transfer a cookbook into the sous-chefs organization on Github you must first become a member of the organization. A member of the Sous-Chefs board and assist with sending an invite to the organization.
+
 ## Transferring the code
 
 Cookbook code may live in a number of places, here's what to do when the code is:
