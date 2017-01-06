@@ -67,8 +67,8 @@ There are probably many references to the old URLs out there in the world. Some 
 -
 In `metadata.rb`:
 ```ruby
-source_url "https://github.com/sous-chefs/#{name}" if respond_to?(:source_url)
-issues_url "https://github.com/sous-chefs/#{name}/issues" if respond_to?(:issues_url)
+source_url "https://github.com/sous-chefs/#{name}"
+issues_url "https://github.com/sous-chefs/#{name}/issues"
 maintainer 'Sous Chefs'
 maintainer_email 'help@sous-chefs.org'
 ```
