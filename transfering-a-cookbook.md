@@ -54,7 +54,7 @@ Once the cookbook has been transferred a Sous-Chefs board member can setup the p
 
 - Add a new Github team with the same name as the cookbook
 - Add maintainers to that group
-- Add that team to the repo with **Admin* privileges
+- Add that team to the repo with **Admin** privileges
 
 ## Transferring the cookbook in Supermarket
 
