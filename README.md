@@ -13,8 +13,14 @@ Cookbooks:
 - [`haproxy`](https://github.com/sous-chefs/haproxy)
 - [`mongodb`](https://github.com/sous-chefs/mongodb)
 - [`nano`](https://github.com/sous-chefs/nano)
+- [`openvpn`](https://github.com/sous-chefs/openvpn)
+- [`ossec`](https://github.com/sous-chefs/ossec)
 - [`postgresql`](https://github.com/sous-chefs/postgresql)
 - [`unbound`](https://github.com/sous-chefs/unbound)
+- [`samba`](https://github.com/sous-chefs/samba)
+- [`selinux_policy`](https://github.com/sous-chefs/selinux_policy)
+- [`smartmontools`](https://github.com/sous-chefs/smartmontools)
+- [`snort`](https://github.com/sous-chefs/snort)
 - [`sysctl`](https://github.com/sous-chefs/sysctl)
 
 Projects:
@@ -22,6 +28,6 @@ Projects:
 - [`sc-foodcritic-rules`](https://github.com/sous-chefs/sc-foodcritic-rules): Foodcritic rules for Sous Chefs cookbooks
 - [`cookbook-skeleton`](https://github.com/sous-chefs/cookbook-skeleton): default file structure, tooling
 - [`infra-chef-cfg`](https://github.com/sous-chefs/infra-chef-cfg): chef config for our servers
-- [`infra-tf-resources`](https://github.com/sous-chefs/infra-tf-resources): terraform config for provisioning
+- [`terraform-github-org`](https://github.com/sous-chefs/terraform-github-org): terraform config for the Github Org
 - [`ops`](https://github.com/sous-chefs/ops): Operating sous-chefs infra & services
 - [`sous-chefs.github.io`](https://github.com/sous-chefs/sous-chefs.github.io): web site
