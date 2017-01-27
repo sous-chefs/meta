@@ -1,4 +1,4 @@
-# Transferring a Cookbook to the Chef Brigade
+# Transferring a Cookbook to the Sous Chefs
 
 Got a cookbook you'd like help with? We'd love to help!
 
