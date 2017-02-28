@@ -1,9 +1,21 @@
 # Membership
 
-## Board Members
+## Board
 
+The board is responsible for those things that are not easily distributed. 
+
+- enforce the code of conduct
+- enforce licenses
+- manage finances
+- control access to community services
+
+This list should remain as small as possible. If it is possible to automate, it should be automated.
+
+The board reserves the authority to do any lawful act necessary to operate the community, but we'll try to avoid wielding this hammer as much as possible.
+
+## Current Board Members
 - Tim Smith (@tas50) 
-- Joseph Holsten (@josephholsten0
+- Joseph Holsten (@josephholsten)
 - Dan Webb (@damacus)
 
 ## Owners
