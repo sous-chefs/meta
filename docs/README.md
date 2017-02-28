@@ -28,14 +28,14 @@ We currently maintain the following set of cookbooks:
 - [`openvpn`](https://github.com/sous-chefs/openvpn)
 - [`ossec`](https://github.com/sous-chefs/ossec)
 - [`postgresql`](https://github.com/sous-chefs/postgresql)
-- [`unbound`](https://github.com/sous-chefs/unbound)
+- [`ruby_build`](https://github.com/sous-chefs/ruby_build)
 - [`samba`](https://github.com/sous-chefs/samba)
 - [`selinux_policy`](https://github.com/sous-chefs/selinux_policy)
 - [`smartmontools`](https://github.com/sous-chefs/smartmontools)
 - [`snort`](https://github.com/sous-chefs/snort)
 - [`sysctl`](https://github.com/sous-chefs/sysctl)
+- [`unbound`](https://github.com/sous-chefs/unbound)
 - [`varnish`](https://github.com/sous-chefs/varnish)
-- [`ruby_build`](https://github.com/sous-chefs/ruby_build)
 
 Projects:
 
