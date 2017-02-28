@@ -34,6 +34,8 @@ We currently maintain the following set of cookbooks:
 - [`smartmontools`](https://github.com/sous-chefs/smartmontools)
 - [`snort`](https://github.com/sous-chefs/snort)
 - [`sysctl`](https://github.com/sous-chefs/sysctl)
+- [`varnish`](https://github.com/sous-chefs/varnish)
+- [`ruby_build`](https://github.com/sous-chefs/ruby_build)
 
 Projects:
 
