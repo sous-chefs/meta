@@ -14,9 +14,9 @@ This list should remain as small as possible. If it is possible to automate, it 
 The board reserves the authority to do any lawful act necessary to operate the community, but we'll try to avoid wielding this hammer as much as possible.
 
 ## Current Board Members
-- Tim Smith (@tas50) 
-- Joseph Holsten (@josephholsten)
-- Dan Webb (@damacus)
+- Tim Smith ([@tas50](https://github.com/tas50/)) 
+- Joseph Holsten (([@josephholsten](https://github.com/josephholsten/)) )
+- Dan Webb (([@damacus](https://github.com/damacus/)) )
 
 ## Owners
 
