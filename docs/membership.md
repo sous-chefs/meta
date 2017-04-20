@@ -15,8 +15,8 @@ The board reserves the authority to do any lawful act necessary to operate the c
 
 ## Current Board Members
 - Tim Smith ([@tas50](https://github.com/tas50/)) 
-- Joseph Holsten (([@josephholsten](https://github.com/josephholsten/)) )
-- Dan Webb (([@damacus](https://github.com/damacus/)) )
+- Joseph Holsten ([@josephholsten](https://github.com/josephholsten/))
+- Dan Webb ([@damacus](https://github.com/damacus/))
 
 ## Owners
 
