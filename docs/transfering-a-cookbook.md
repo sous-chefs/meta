@@ -82,3 +82,31 @@ issues_url "https://github.com/sous-chefs/#{name}/issues"
 maintainer 'Sous Chefs'
 maintainer_email 'help@sous-chefs.org'
 ```
+
+## Extra Credit: Add our foodcritic rules
+
+We keep a number of extra foodcritic rules in [sc-foodcritic-rules](https://github.com/sous-chefs/sc-foodcritic-rules) to keep things consistent. To set up the repo with the rules (using instructions ripped from its `README.md`), we install these rules as a Rake task:
+
+Inside the cookbook repository, install the rules as a git submodule into `foodcritic/sc`:
+```
+git submodule add https://github.com/sous-chefs/sc-foodcritic-rules.git foodcritic/sc
+```
+
+Then in the `Rakefile`, ensure the `include_rules` option is set to include `foodcritic/sc`:
+```
+require 'foodcritic'
+
+desc 'Run Chef style checks'
+FoodCritic::Rake::LintTask.new(:chef) do |t|
+  t.options = {
+    include_rules: 'foodcritic/sc',
+    fail_tags: ['any'],
+    progress: true,
+  }
+end
+```
+
+Finally, verify the rules are being followed by running:
+```
+rake style:chef
+```
