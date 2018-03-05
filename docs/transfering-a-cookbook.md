@@ -106,7 +106,7 @@ FoodCritic::Rake::LintTask.new(:chef) do |t|
 end
 ```
 
-Finally, verify that the rules are in affect by running:
+Finally, verify the rules are being followed by running:
 ```
 rake style:chef
 ```
