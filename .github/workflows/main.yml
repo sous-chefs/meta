@@ -1,0 +1,15 @@
+name: CI
+
+on: [pull_request]
+
+env:
+  NO_BRANCH_DELETED_EXIT_CODE: 0
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: jessfraz/branch-cleanup-action@master
