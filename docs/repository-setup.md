@@ -6,6 +6,6 @@
 
   - We aim to have clean understandable updates, and good git history. Rather than hiding a mess under the carpet.
 
-# Example
+## Example
 
 ![Repo Layout](images/branch_protection.png)

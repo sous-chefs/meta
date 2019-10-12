@@ -6,7 +6,6 @@ If a maintainer wants to stop or leave, it's cool. We'll gladly point to the pro
 
 If a cookbook is for software that's no longer feasible to keep running, like old open source, old commercial stuff, anything that can't be downloaded; then we update the cookbook `README.md` to mark as deprecated.
 
-
 ## When the cookbook is unused
 
 If a cookbook seems entirely unused, we may want to stop claiming it is maintained. In that case, we'll update the cookbook `README.md` to mark it as archived.

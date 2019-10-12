@@ -2,7 +2,7 @@
 
 ## Board
 
-The board is responsible for those things that are not easily distributed. 
+The board is responsible for those things that are not easily distributed.
 
 - enforce the code of conduct
 - enforce licenses
@@ -14,6 +14,7 @@ This list should remain as small as possible. If it is possible to automate, it 
 The board reserves the authority to do any lawful act necessary to operate the community, but we'll try to avoid wielding this hammer as much as possible.
 
 ## Current Board Members
+
 - Dan Webb ([@damacus](https://github.com/damacus/))
 - Noah Kantrowitz ([@coderander](https://github.com/coderanger/))
 - Tim Smith ([@tas50](https://github.com/tas50/))
@@ -34,9 +35,9 @@ Folks who agree to the decisions made by the sous-chefs in [meta](https://github
 
 Join us on the [Chef community slack](https://chefcommunity.slack.com/messages/sous-chefs/), say hi then;
 
-Send a PR to https://github.com/sous-chefs/terraform-github-org
+Send a PR to <https://github.com/sous-chefs/terraform-github-org>
 
-Adding yourself to: 
+Adding yourself to:
 `members.tf`
 `chef_de_partie.tf`
 
