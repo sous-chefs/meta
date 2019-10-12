@@ -14,7 +14,7 @@
 
 The preferred software license to publish the work of Sous Chefs is [Apache License](http://www.apache.org/licenses/LICENSE-2.0). All published work **must be** under an **Open Source Software license**.
 
-You can see the different licenses available here: http://choosealicense.com/
+You can see the different licenses available here: <http://choosealicense.com/>
 
 How to add the [Apache License](http://www.apache.org/licenses/LICENSE-2.0) to a project:
 
@@ -281,7 +281,7 @@ The *README* file should have the license at the bottom. For example:
 
 The preferred license for documentation published by Sous Chefs is [Creative Commons Attribution 4.0 International](http://creativecommons.org/licenses/by/4.0/). All documentation published **must be** under a [Creative Commons](http://creativecommons.org/) license.
 
-You can see the different licenses available here: http://creativecommons.org/choose/
+You can see the different licenses available here: <http://creativecommons.org/choose/>
 
 How to add the [Creative Commons Attribution 4.0 International](http://creativecommons.org/licenses/by/4.0/) license to a project:
 
@@ -292,7 +292,7 @@ How to add the [Creative Commons Attribution 4.0 International](http://creativec
 
 Put the license in a file called *LICENSE* in the root of the repository.
 
-Get the license from here: http://creativecommons.org/licenses/by/4.0/legalcode.txt
+Get the license from here: <http://creativecommons.org/licenses/by/4.0/legalcode.txt>
 
 ### Creative Commons Attribution 4.0 International Icon
 
