@@ -43,6 +43,7 @@ There's the script to extract a cookbook's history from a monolithic repo. Then 
 This is adapted from “[How to extract a single file with its history from a git repository](https://gist.github.com/ssp/1663093)” by [ssp](https://github.com/ssp)
 
 ### From a non-GitHub repo
+
 - Create a GitHub repo for the cookbook with owner:`sous-chefs` and name:`${name}`
 - Clone the cookbook to a local repo `git clone ${repo_url}`
 - Add the GitHub repo as a remote `git remote add sous-chefs https://github.com/sous-chefs/${name}.git`
@@ -75,7 +76,9 @@ There are probably many references to the old URLs out there in the world. Some 
 
 - Update the `README.md` with a link to the current repo and supermarket page
 -
+
 In `metadata.rb`:
+
 ```ruby
 source_url "https://github.com/sous-chefs/#{name}"
 issues_url "https://github.com/sous-chefs/#{name}/issues"
@@ -88,11 +91,13 @@ maintainer_email 'help@sous-chefs.org'
 We keep a number of extra foodcritic rules in [sc-foodcritic-rules](https://github.com/sous-chefs/sc-foodcritic-rules) to keep things consistent. To set up the repo with the rules (using instructions ripped from its `README.md`), we install these rules as a Rake task:
 
 Inside the cookbook repository, install the rules as a git submodule into `foodcritic/sc`:
+
 ```
 git submodule add https://github.com/sous-chefs/sc-foodcritic-rules.git foodcritic/sc
 ```
 
 Then in the `Rakefile`, ensure the `include_rules` option is set to include `foodcritic/sc`:
+
 ```
 require 'foodcritic'
 
@@ -107,6 +112,7 @@ end
 ```
 
 Finally, verify the rules are being followed by running:
+
 ```
 rake style:chef
 ```

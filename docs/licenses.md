@@ -285,7 +285,7 @@ You can see the different licenses available here: <http://creativecommons.org/c
 
 How to add the [Creative Commons Attribution 4.0 International](http://creativecommons.org/licenses/by/4.0/) license to a project:
 
-- [The documentation repositories **must have** a *LICENSE* file with the license.](#creative-commons-attribution-40-International-license-file)
+- [The documentation repositories **must have** a *LICENSE* file with the license.](#creative-commons-attribution-40-international-license-file)
 - [The documentation files should have an icon with the license at the bottom.](#creative-commons-attribution-40-international-icon)
 
 ### Creative Commons Attribution 4.0 International *LICENSE* File

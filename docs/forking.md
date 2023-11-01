@@ -22,9 +22,9 @@ Sous Chefs should not make a release until we know whether we get a transfer (an
 ## Procedure
 
 You should rename using the following naming schema:
+
 - Cookbook: `mongodb` → `sc-mongodb` as per [RFC-78](https://github.com/chef/chef-rfc/blob/master/rfc078-supermarket-prefix.md)
 - Repository: `sc-mongodb`
-
 
 ### Use of provides to maintain resource compatibility
 
@@ -37,6 +37,3 @@ provides :foo_bar
 See <https://docs.chef.io/custom_resources.html#provides> for additional examples.
 
 `Note`: This requires Chef 12 or greater, but can be done in both LWRPs and Custom Resources.
-
-
-
