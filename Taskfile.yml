@@ -9,6 +9,15 @@
 #   task stats                → notification counts by type / reason / org
 #   task mark-repo-read       → mark one repo's notifications as read (REPO=owner/repo)
 #
+# ORG AUDIT & VISIBILITY
+#   task migration-status     → release pipeline migration progress (FILTER= optional)
+#   task open-prs             → all open PRs across the org (FILTER=, AUTHOR=, LABEL= optional)
+#   task ci-status            → repos with failing CI on main (FILTER= optional)
+#   task label-sync           → ensure required labels exist on all repos (DRY_RUN=true, FILTER= optional)
+#   task secrets-check        → verify release pipeline secrets at org level
+#   task stale-repos          → repos with no push in MONTHS=12 (FILTER= optional)
+#   task pending-releases     → open release-please PRs waiting to be merged
+#
 # WORKFLOW & RELEASE PIPELINE
 #   task cancel-runs          → cancel in-progress Actions runs (ORG=, REPO= optional)
 #   task update-release-pipeline → full 9-step release pipeline migration (REPO=)
@@ -821,3 +830,690 @@ tasks:
           set_color normal
           bash "{{.ROOT_DIR}}/scripts/manage-webhooks.sh" disable
         end
+
+  # ===========================================================================
+  # ORG AUDIT & VISIBILITY
+  # ===========================================================================
+
+  # ---------------------------------------------------------------------------
+  # migration-status: Release pipeline migration progress across all repos.
+  # Checks for release-please-config.json via GitHub code search (fast, no
+  # local clones). Results may lag a few minutes after a recent push.
+  # Optional: FILTER=<substr> to narrow by repo name.
+  # ---------------------------------------------------------------------------
+  migration-status:
+    desc: "Show release pipeline migration progress across all {{.ORG}} repos. Optional: FILTER=<name>"
+    silent: true
+    vars:
+      FILTER: '{{.FILTER | default ""}}'
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set org "{{.ORG}}"
+        set filter "{{.FILTER}}"
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Release Pipeline Migration Status — $org"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set_color '#EBCB8B'
+        echo "  Fetching repo list..."
+        set_color normal
+
+        set all_repos (gh repo list $org --limit 1000 \
+          --json name,isArchived \
+          --jq '[.[] | select(.isArchived == false)] | .[].name' | sort)
+
+        if test -n "$filter"
+          set all_repos (string match -a "*$filter*" $all_repos)
+          set_color '#EBCB8B'
+          echo "  Filter: $filter"
+          set_color normal
+        end
+
+        set total (count $all_repos)
+
+        set_color '#EBCB8B'
+        echo "  Searching for migrated repos via code search..."
+        set_color normal
+
+        # Code search for repos containing release-please-config.json
+        # (rate: 10 req/min auth'd; 100 results/page; max 1000 total)
+        set migrated_search (gh api \
+          "search/code?q=filename%3Arelease-please-config.json+org%3A$org&per_page=100" \
+          --paginate \
+          --jq '.items[].repository.name' 2>/dev/null | sort | uniq)
+
+        set migrated_list
+        set not_migrated_list
+
+        for repo in $all_repos
+          if contains $repo $migrated_search
+            set migrated_list $migrated_list $repo
+          else
+            set not_migrated_list $not_migrated_list $repo
+          end
+        end
+
+        set migrated_count (count $migrated_list)
+        set not_count (count $not_migrated_list)
+
+        set pct 0
+        if test $total -gt 0
+          set pct (math --scale=0 "floor($migrated_count * 100 / $total)")
+        end
+
+        # Progress bar
+        set filled (math --scale=0 "floor($pct / 5)")
+        set empty (math "20 - $filled")
+        set bar (string repeat -n $filled "█")(string repeat -n $empty "░")
+
+        echo ""
+        set_color '#A3BE8C'
+        echo "  [$bar] $pct%  —  $migrated_count / $total repos migrated"
+        set_color normal
+        echo ""
+
+        if test $not_count -gt 0
+          set_color '#EBCB8B'
+          echo "  Not yet migrated ($not_count):"
+          set_color normal
+          for repo in $not_migrated_list
+            set_color '#BF616A'
+            echo "    ❌  $repo"
+            set_color normal
+          end
+          echo ""
+          set_color '#88C0D0'
+          echo "  To migrate: task update-release-pipeline REPO=<name>"
+          set_color normal
+        else
+          set_color '#A3BE8C'
+          echo "  All repos have been migrated!"
+          set_color normal
+        end
+
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # open-prs: All open PRs across the org in one table.
+  # Uses gh search (fast). Age-coloured: green <7d, yellow 7-30d, red >30d.
+  # Optional: FILTER=<repo-substr>, AUTHOR=<login>, LABEL=<label-name>
+  # ---------------------------------------------------------------------------
+  open-prs:
+    desc: "Show all open PRs in {{.ORG}}. Optional: FILTER=<repo>, AUTHOR=<login>, LABEL=<label>"
+    silent: true
+    vars:
+      FILTER: '{{.FILTER | default ""}}'
+      AUTHOR: '{{.AUTHOR | default ""}}'
+      LABEL:  '{{.LABEL  | default ""}}'
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set org "{{.ORG}}"
+        set filter "{{.FILTER}}"
+        set author "{{.AUTHOR}}"
+        set label  "{{.LABEL}}"
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Open Pull Requests — $org"
+        echo "  ══════════════════════════════════════════════════"
+        set_color '#EBCB8B'
+        if test -n "$filter"; echo "  Filter : $filter"; end
+        if test -n "$author"; echo "  Author : $author"; end
+        if test -n "$label";  echo "  Label  : $label";  end
+        set_color normal
+
+        set search_args --owner $org --state open --limit 500 --sort updated
+        set search_args $search_args --json number,title,repository,author,createdAt,labels
+
+        if test -n "$author"
+          set search_args $search_args --author $author
+        end
+        if test -n "$label"
+          set search_args $search_args --label $label
+        end
+
+        set tmpfile (mktemp)
+        gh search prs $search_args > $tmpfile 2>/dev/null
+
+        if test -n "$filter"
+          set filtered (mktemp)
+          jq --arg f "$filter" '[.[] | select(.repository.name | contains($f))]' \
+            < $tmpfile > $filtered
+          mv $filtered $tmpfile
+        end
+
+        set total (jq 'length' < $tmpfile)
+
+        if test "$total" -eq 0
+          set_color '#A3BE8C'
+          echo ""
+          echo "  No open PRs found"
+          set_color normal
+          rm $tmpfile
+          echo ""
+          exit 0
+        end
+
+        echo ""
+        set_color '#EBCB8B'
+        printf "  %-35s  %-5s  %-14s  %s\n" "REPO" "#PR" "AUTHOR" "TITLE"
+        printf "  %-35s  %-5s  %-14s  %s\n" \
+          "-----------------------------------" "-----" "--------------" "-----"
+        set_color normal
+
+        set now (date +%s)
+
+        for row in (jq -r \
+          'sort_by(.repository.name, .createdAt) | .[] |
+           [.repository.name, (.number|tostring), .author.login,
+            (.title | gsub("\t";" ")), .createdAt] | @tsv' \
+          < $tmpfile)
+
+          set cols (string split \t -- $row)
+          set repo    $cols[1]
+          set pr      $cols[2]
+          set login   $cols[3]
+          set title   (string sub -l 52 $cols[4])
+          set created_ts (date -d $cols[5] +%s 2>/dev/null)
+          set age_days (math "($now - $created_ts) / 86400")
+
+          if test "$age_days" -gt 30
+            set_color '#BF616A'
+          else if test "$age_days" -gt 7
+            set_color '#EBCB8B'
+          else
+            set_color '#A3BE8C'
+          end
+
+          printf "  %-35s  #%-4s  %-14s  %s (%dd)\n" \
+            $repo $pr $login $title $age_days
+          set_color normal
+        end
+
+        rm $tmpfile
+        echo ""
+        set_color '#88C0D0'
+        echo "  Total: $total open PR(s)"
+        set_color normal
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # ci-status: Show repos with failing CI on the main branch.
+  # Scans repos active in the last 90 days (skips archived + stale repos).
+  # One API call per repo — expect ~30-60s for 100+ active repos.
+  # Optional: FILTER=<name-substr> to narrow scope.
+  # ---------------------------------------------------------------------------
+  ci-status:
+    desc: "Show repos with failing CI on main (active last 90d). Optional: FILTER=<name>"
+    silent: true
+    vars:
+      FILTER: '{{.FILTER | default ""}}'
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set org "{{.ORG}}"
+        set filter "{{.FILTER}}"
+        set cutoff (date -d "90 days ago" --iso-8601=seconds)
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  CI Status on main — $org"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set_color '#EBCB8B'
+        echo "  Fetching recently active repos (last 90 days)..."
+        set_color normal
+
+        set repos (gh repo list $org --limit 1000 \
+          --json name,isArchived,pushedAt \
+          --jq --arg c "$cutoff" \
+          '[.[] | select(.isArchived == false and .pushedAt > $c)] | .[].name' | sort)
+
+        if test -n "$filter"
+          set repos (string match -a "*$filter*" $repos)
+          set_color '#EBCB8B'
+          echo "  Filter: $filter"
+          set_color normal
+        end
+
+        set total (count $repos)
+        set_color '#EBCB8B'
+        echo "  Checking $total repos..."
+        set_color normal
+        echo ""
+
+        set failing_count 0
+        set checked 0
+
+        for repo in $repos
+          set checked (math $checked + 1)
+
+          set failed_names (gh api \
+            "repos/$org/$repo/commits/main/check-runs" \
+            --jq '[.check_runs[] | select(.conclusion == "failure") | .name] | join(", ")' \
+            2>/dev/null)
+
+          if test -n "$failed_names"
+            set failing_count (math $failing_count + 1)
+            set_color '#BF616A'
+            printf "  ❌  %-35s  %s\n" $repo (string sub -l 50 $failed_names)
+            set_color normal
+          end
+
+          if test (math "$checked % 25") -eq 0
+            set_color '#EBCB8B'
+            echo "  ... $checked / $total checked"
+            set_color normal
+          end
+        end
+
+        echo ""
+        if test $failing_count -eq 0
+          set_color '#A3BE8C'
+          echo "  All $total active repos have green CI on main!"
+          set_color normal
+        else
+          set_color '#BF616A'
+          echo "  $failing_count / $total repo(s) with failing CI on main"
+          set_color normal
+          echo ""
+          set_color '#88C0D0'
+          echo "  To investigate: gh run list --repo $org/<name> --branch main"
+          set_color normal
+        end
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # label-sync: Ensure all repos have the required standard labels.
+  # Creates/updates: autorelease:pending, autorelease:tagged,
+  #   Release:Patch, Skip:Announcements (used by release-please + Renovate).
+  # Pass DRY_RUN=true to preview without making changes.
+  # Optional: FILTER=<name-substr> to target specific repos.
+  # ---------------------------------------------------------------------------
+  label-sync:
+    desc: "Create/update required labels on all {{.ORG}} repos. DRY_RUN=true to preview. Optional: FILTER=<name>"
+    silent: true
+    vars:
+      FILTER:  '{{.FILTER  | default ""}}'
+      DRY_RUN: '{{.DRY_RUN | default "false"}}'
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set org "{{.ORG}}"
+        set filter  "{{.FILTER}}"
+        set dry_run "{{.DRY_RUN}}"
+
+        # Required labels — parallel arrays: name, hex colour, description
+        set label_names \
+          "autorelease: pending" \
+          "autorelease: tagged" \
+          "Release: Patch" \
+          "Skip: Announcements"
+        set label_colors \
+          "ededed" \
+          "0075ca" \
+          "0e8a16" \
+          "e4e669"
+        set label_descs \
+          "release-please is preparing a release PR" \
+          "release-please has tagged this release" \
+          "Trigger a patch release on merge" \
+          "Do not include in release announcements"
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Label Sync — $org"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        if test "$dry_run" = "true"
+          set_color '#EBCB8B'
+          echo "  DRY RUN — no changes will be made"
+          set_color normal
+        end
+
+        set repos (gh repo list $org --limit 1000 \
+          --json name,isArchived \
+          --jq '[.[] | select(.isArchived == false)] | .[].name' | sort)
+
+        if test -n "$filter"
+          set repos (string match -a "*$filter*" $repos)
+          set_color '#EBCB8B'
+          echo "  Filter: $filter"
+          set_color normal
+        end
+
+        set total (count $repos)
+        set_color '#EBCB8B'
+        echo "  Repos: $total  |  Labels to ensure: "(count $label_names)
+        set_color normal
+        echo ""
+
+        set done_count 0
+
+        for repo in $repos
+          set done_count (math $done_count + 1)
+
+          for i in (seq (count $label_names))
+            if test "$dry_run" = "true"
+              set_color '#EBCB8B'
+              echo "  would create: $repo — \"$label_names[$i]\""
+              set_color normal
+            else
+              gh label create "$label_names[$i]" \
+                --repo "$org/$repo" \
+                --color "$label_colors[$i]" \
+                --description "$label_descs[$i]" \
+                --force \
+                2>/dev/null
+            end
+          end
+
+          if test "$dry_run" != "true"
+            if test (math "$done_count % 20") -eq 0
+              set_color '#EBCB8B'
+              echo "  ... $done_count / $total done"
+              set_color normal
+            end
+          end
+        end
+
+        echo ""
+        if test "$dry_run" = "true"
+          set_color '#EBCB8B'
+          echo "  Dry run complete. Run without DRY_RUN=true to apply."
+          set_color normal
+        else
+          set_color '#A3BE8C'
+          echo "  Done. Labels synced on $done_count repo(s)."
+          set_color normal
+        end
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # secrets-check: Verify required release pipeline secrets at org level.
+  # Checks for PORTER_GITHUB_TOKEN, CHEF_SUPERMARKET_USER, CHEF_SUPERMARKET_KEY.
+  # These must exist at org scope to power the release workflow in all repos.
+  # ---------------------------------------------------------------------------
+  secrets-check:
+    desc: "Verify release pipeline secrets exist at {{.ORG}} org level"
+    silent: true
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set org "{{.ORG}}"
+        set required \
+          "PORTER_GITHUB_TOKEN" \
+          "CHEF_SUPERMARKET_USER" \
+          "CHEF_SUPERMARKET_KEY"
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Secrets Check — $org"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set tmpfile (mktemp)
+        gh secret list --org $org --json name --jq '.[].name' > $tmpfile 2>/dev/null
+        set org_secrets (cat $tmpfile)
+        rm $tmpfile
+
+        echo ""
+        set_color '#EBCB8B'
+        echo "  Org-level secrets (required for release workflow):"
+        set_color normal
+
+        set missing_count 0
+
+        for secret in $required
+          if contains $secret $org_secrets
+            set_color '#A3BE8C'
+            echo "    ✔  $secret"
+            set_color normal
+          else
+            set_color '#BF616A'
+            echo "    ✘  $secret  ← MISSING"
+            set_color normal
+            set missing_count (math $missing_count + 1)
+          end
+        end
+
+        echo ""
+        if test $missing_count -eq 0
+          set_color '#A3BE8C'
+          echo "  All required secrets are configured."
+          echo "  Repos with org-secret access will have working releases."
+          set_color normal
+        else
+          set_color '#BF616A'
+          echo "  $missing_count required secret(s) missing from $org."
+          set_color normal
+          echo ""
+          set_color '#88C0D0'
+          echo "  Add at: https://github.com/organizations/$org/settings/secrets/actions"
+          set_color normal
+        end
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # stale-repos: Repos with no push activity in the last MONTHS months.
+  # Skips archived repos. Useful for identifying candidates for archiving or
+  # handover to new maintainers.
+  # Optional: MONTHS=12 (default), FILTER=<name-substr>
+  # ---------------------------------------------------------------------------
+  stale-repos:
+    desc: "Show repos with no push in MONTHS=12. Optional: FILTER=<name>"
+    silent: true
+    vars:
+      MONTHS:  '{{.MONTHS  | default "12"}}'
+      FILTER:  '{{.FILTER  | default ""}}'
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set org    "{{.ORG}}"
+        set months "{{.MONTHS}}"
+        set filter "{{.FILTER}}"
+        set cutoff (date -d "$months months ago" --iso-8601=seconds)
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Stale Repos — $org  (no push in $months+ months)"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set_color '#EBCB8B'
+        echo "  Fetching repo list..."
+        set_color normal
+
+        # Fetch all non-archived repos with their last-push timestamp
+        set tmpfile (mktemp)
+        gh repo list $org --limit 1000 \
+          --json name,pushedAt,isArchived,description \
+          --jq --arg c "$cutoff" \
+          '[.[] | select(.isArchived == false and .pushedAt < $c)]
+           | sort_by(.pushedAt)' \
+          > $tmpfile
+
+        if test -n "$filter"
+          set filtered (mktemp)
+          jq --arg f "$filter" \
+            '[.[] | select(.name | contains($f))]' \
+            < $tmpfile > $filtered
+          mv $filtered $tmpfile
+          set_color '#EBCB8B'
+          echo "  Filter: $filter"
+          set_color normal
+        end
+
+        set total (jq 'length' < $tmpfile)
+
+        if test "$total" -eq 0
+          set_color '#A3BE8C'
+          echo ""
+          echo "  No repos stale for $months+ months — everything is active!"
+          set_color normal
+          rm $tmpfile
+          echo ""
+          exit 0
+        end
+
+        set now (date +%s)
+
+        echo ""
+        set_color '#EBCB8B'
+        printf "  %-35s  %-12s  %s\n" "REPO" "LAST PUSH" "AGE"
+        printf "  %-35s  %-12s  %s\n" \
+          "-----------------------------------" "------------" "---"
+        set_color normal
+
+        for row in (jq -r \
+          '.[] | [.name, .pushedAt, (.description // "")] | @tsv' \
+          < $tmpfile)
+
+          set cols      (string split \t -- $row)
+          set repo      $cols[1]
+          set pushed    $cols[2]
+          set desc      (string sub -l 40 $cols[3])
+          set pushed_ts (date -d $pushed +%s 2>/dev/null)
+          set age_days  (math "($now - $pushed_ts) / 86400")
+          set age_mo    (math --scale=1 "$age_days / 30")
+          set pushed_fmt (date -d $pushed +%Y-%m-%d 2>/dev/null)
+
+          if test "$age_days" -gt 730
+            set_color '#BF616A'
+          else if test "$age_days" -gt 365
+            set_color '#EBCB8B'
+          else
+            set_color normal
+          end
+
+          printf "  %-35s  %-12s  %s months ago\n" \
+            $repo $pushed_fmt $age_mo
+          set_color normal
+        end
+
+        rm $tmpfile
+        echo ""
+        set_color '#EBCB8B'
+        echo "  Total: $total stale repo(s)"
+        set_color '#88C0D0'
+        echo "  To archive: gh repo archive <owner/repo>"
+        set_color normal
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # pending-releases: Open release-please PRs waiting to be merged.
+  # Searches for PRs labelled "autorelease: pending" across the org.
+  # This is the table-view companion to list-release-prs (which opens browsers).
+  # Optional: FILTER=<repo-name-substr>
+  # ---------------------------------------------------------------------------
+  pending-releases:
+    desc: "Show open release-please PRs waiting to merge. Optional: FILTER=<repo>"
+    silent: true
+    vars:
+      FILTER: '{{.FILTER | default ""}}'
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set org    "{{.ORG}}"
+        set filter "{{.FILTER}}"
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Pending Releases — $org"
+        echo "  ══════════════════════════════════════════════════"
+        set_color '#EBCB8B'
+        echo "  Label: autorelease: pending"
+        if test -n "$filter"; echo "  Filter: $filter"; end
+        set_color normal
+
+        set tmpfile (mktemp)
+        gh search prs \
+          --owner $org \
+          --state open \
+          --label "autorelease: pending" \
+          --limit 500 \
+          --sort updated \
+          --json number,title,repository,createdAt,url \
+          > $tmpfile 2>/dev/null
+
+        if test -n "$filter"
+          set filtered (mktemp)
+          jq --arg f "$filter" \
+            '[.[] | select(.repository.name | contains($f))]' \
+            < $tmpfile > $filtered
+          mv $filtered $tmpfile
+        end
+
+        set total (jq 'length' < $tmpfile)
+
+        if test "$total" -eq 0
+          set_color '#A3BE8C'
+          echo ""
+          echo "  No pending release PRs — all caught up!"
+          set_color normal
+          rm $tmpfile
+          echo ""
+          exit 0
+        end
+
+        set now (date +%s)
+
+        echo ""
+        set_color '#EBCB8B'
+        printf "  %-30s  %-5s  %-10s  %s\n" "REPO" "#PR" "OPEN FOR" "TITLE"
+        printf "  %-30s  %-5s  %-10s  %s\n" \
+          "------------------------------" "-----" "----------" "-----"
+        set_color normal
+
+        for row in (jq -r \
+          'sort_by(.repository.name) | .[] |
+           [.repository.name, (.number|tostring),
+            (.title | gsub("\t";" ")), .createdAt, .url] | @tsv' \
+          < $tmpfile)
+
+          set cols      (string split \t -- $row)
+          set repo      $cols[1]
+          set pr        $cols[2]
+          set title     (string sub -l 45 $cols[3])
+          set created_ts (date -d $cols[4] +%s 2>/dev/null)
+          set age_days  (math "($now - $created_ts) / 86400")
+          set url       $cols[5]
+
+          if test "$age_days" -gt 14
+            set_color '#BF616A'
+          else if test "$age_days" -gt 3
+            set_color '#EBCB8B'
+          else
+            set_color '#A3BE8C'
+          end
+
+          printf "  %-30s  #%-4s  %-10s  %s\n" \
+            $repo $pr "$age_days days" $title
+          set_color normal
+        end
+
+        rm $tmpfile
+        echo ""
+        set_color '#88C0D0'
+        echo "  $total release(s) queued"
+        set_color normal
+        echo ""
+        set_color '#EBCB8B'
+        echo "  To merge all:   task force-merge-prs REPOS_PATH=<path>"
+        echo "  To open in browser: task list-release-prs REPOS_PATH=<path>"
+        set_color normal
+        echo ""
