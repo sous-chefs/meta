@@ -1,0 +1,461 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# GitHub Notification Manager for sous-chefs org
+# Usage: task --list           → show all available tasks
+#        task preview          → dry run (safe, no changes)
+#        task cleanup-noise    → dismiss CI/bot noise
+#        task check-sous-chefs → show active sous-chefs Issues
+version: "3"
+
+vars:
+  ORG: sous-chefs
+
+silent: false
+
+tasks:
+
+  # ---------------------------------------------------------------------------
+  # default: Show available tasks when `task` is run with no arguments
+  # ---------------------------------------------------------------------------
+  default:
+    desc: "Show available tasks"
+    silent: true
+    cmds:
+      - task --list
+
+  # ---------------------------------------------------------------------------
+  # cleanup-noise: Dismiss high-volume CI/bot notification noise
+  #
+  # Dismisses notifications where:
+  #   - Title contains "failed", "merged", or "closed" (case-insensitive)
+  #   - OR reason code is "state_change"
+  # BUT preserves: sous-chefs org notifications of type "Issue"
+  # ---------------------------------------------------------------------------
+  cleanup-noise:
+    desc: "Prune CI/bot noise (failed/merged/closed/state_change) — preserves sous-chefs Issues"
+    silent: true
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  GitHub Notification Cleanup"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set_color '#EBCB8B'
+        echo "  Fetching all unread notifications..."
+        set_color normal
+
+        set tmpfile (mktemp)
+        gh api /notifications --paginate --jq '.[]' | jq -s '.' > $tmpfile
+
+        set total (jq 'length' < $tmpfile)
+
+        set_color '#88C0D0'
+        echo "  Found $total unread notification(s) total"
+        set_color normal
+
+        # Build list of thread IDs to dismiss
+        set dismiss_ids (jq -r '
+          [
+            .[] | select(
+              (
+                (.subject.title | ascii_downcase | test("failed|merged|closed")) or
+                (.reason == "state_change")
+              ) and not (
+                .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
+              )
+            ) | .id
+          ] | .[]
+        ' < $tmpfile)
+
+        set preserve_count (jq '
+          [
+            .[] | select(
+              .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
+            )
+          ] | length
+        ' < $tmpfile)
+
+        set dismiss_count (count $dismiss_ids)
+
+        if test $dismiss_count -eq 0
+          set_color '#A3BE8C'
+          echo "  Nothing to dismiss — inbox is clean!"
+          set_color normal
+          rm $tmpfile
+          exit 0
+        end
+
+        set_color '#EBCB8B'
+        echo "  Dismissing $dismiss_count notification(s)..."
+        set_color normal
+
+        set marked 0
+        for id in $dismiss_ids
+          gh api --method PATCH /notifications/threads/$id > /dev/null
+          set marked (math $marked + 1)
+          if test (math "$marked % 25") -eq 0
+            echo "    ... $marked / $dismiss_count dismissed"
+          end
+        end
+
+        rm $tmpfile
+
+        echo ""
+        set_color '#A3BE8C'
+        echo "  ✔  Done"
+        echo "     Dismissed : $dismiss_count"
+        echo "     Preserved : $preserve_count  (sous-chefs Issues — review with: task check-sous-chefs)"
+        set_color normal
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # check-sous-chefs: Surface active sous-chefs Issues for manual review
+  # ---------------------------------------------------------------------------
+  check-sous-chefs:
+    desc: "Show unread Issue notifications from sous-chefs/* repos for manual review"
+    silent: true
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Unread Issues — sous-chefs org"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set tmpfile (mktemp)
+        gh api /notifications --paginate --jq '.[]' | jq -s '
+          [
+            .[] | select(
+              .repository.owner.login == "sous-chefs" and
+              .subject.type == "Issue"
+            )
+          ] | sort_by(.repository.full_name)
+        ' > $tmpfile
+
+        set count (jq 'length' < $tmpfile)
+
+        if test $count -eq 0
+          set_color '#A3BE8C'
+          echo "  No unread sous-chefs Issues — you are all caught up!"
+          set_color normal
+          rm $tmpfile
+          echo ""
+          exit 0
+        end
+
+        echo ""
+        set_color '#EBCB8B'
+        printf "  %-35s  %-18s  %-50s\n" "REPO" "REASON" "TITLE"
+        printf "  %-35s  %-18s  %-50s\n" \
+          "-----------------------------------" \
+          "------------------" \
+          "--------------------------------------------------"
+        set_color normal
+
+        for row in (jq -r '.[] | [.repository.full_name, .reason, .subject.title, .subject.url] | @tsv' < $tmpfile)
+          set cols (string split \t -- $row)
+          set repo   $cols[1]
+          set reason $cols[2]
+          set title  $cols[3]
+          # Convert API URL to browser URL
+          set url (echo $cols[4] | sed 's|api\.github\.com/repos|github.com|' | sed 's|/issues/|/issues/|')
+
+          set_color '#88C0D0'
+          printf "  %-35s  " $repo
+          set_color '#BF616A'
+          printf "%-18s  " $reason
+          set_color normal
+          printf "%-50s\n" $title
+        end
+
+        echo ""
+        set_color '#A3BE8C'
+        echo "  Total: $count unread Issue(s) from sous-chefs"
+        set_color normal
+
+        echo ""
+        set_color '#EBCB8B'
+        echo "  Browser links:"
+        set_color normal
+        for row in (jq -r '.[] | [.repository.full_name, .subject.url] | @tsv' < $tmpfile)
+          set cols (string split \t -- $row)
+          set repo $cols[1]
+          set url (echo $cols[2] | sed 's|api\.github\.com/repos|github.com|')
+          set_color '#88C0D0'
+          printf "    %-35s  " $repo
+          set_color normal
+          echo $url
+        end
+
+        rm $tmpfile
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # list-all: List all unread notifications with type, reason, and title
+  # ---------------------------------------------------------------------------
+  list-all:
+    desc: "List all unread notifications (repo, type, reason, title)"
+    silent: true
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  All Unread Notifications"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set tmpfile (mktemp)
+        gh api /notifications --paginate --jq '.[]' | jq -s 'sort_by(.repository.full_name)' > $tmpfile
+
+        set count (jq 'length' < $tmpfile)
+
+        if test $count -eq 0
+          set_color '#A3BE8C'
+          echo "  Inbox zero — nothing to show."
+          set_color normal
+          rm $tmpfile
+          echo ""
+          exit 0
+        end
+
+        echo ""
+        set_color '#EBCB8B'
+        printf "  %-40s  %-15s  %-18s  %s\n" "REPO" "TYPE" "REASON" "TITLE"
+        printf "  %-40s  %-15s  %-18s  %s\n" \
+          "----------------------------------------" \
+          "---------------" \
+          "------------------" \
+          "-----"
+        set_color normal
+
+        for row in (jq -r '.[] | [.repository.full_name, .subject.type, .reason, .subject.title] | @tsv' < $tmpfile)
+          set cols (string split \t -- $row)
+          set_color '#88C0D0'
+          printf "  %-40s  " $cols[1]
+          set_color '#A3BE8C'
+          printf "%-15s  " $cols[2]
+          set_color '#BF616A'
+          printf "%-18s  " $cols[3]
+          set_color normal
+          printf "%s\n" $cols[4]
+        end
+
+        rm $tmpfile
+        echo ""
+        set_color '#88C0D0'
+        echo "  Total: $count unread notification(s)"
+        set_color normal
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # stats: Show notification counts grouped by type, reason, and org
+  # ---------------------------------------------------------------------------
+  stats:
+    desc: "Show unread notification counts grouped by type, reason, and org"
+    silent: true
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Notification Statistics"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set tmpfile (mktemp)
+        gh api /notifications --paginate --jq '.[]' | jq -s '.' > $tmpfile
+
+        set total (jq 'length' < $tmpfile)
+
+        set_color '#EBCB8B'
+        echo ""
+        echo "  By Type:"
+        set_color normal
+        jq -r '
+          group_by(.subject.type) |
+          sort_by(-length) |
+          .[] |
+          "    \(.[0].subject.type): \(length)"
+        ' < $tmpfile
+
+        set_color '#EBCB8B'
+        echo ""
+        echo "  By Reason:"
+        set_color normal
+        jq -r '
+          group_by(.reason) |
+          sort_by(-length) |
+          .[] |
+          "    \(.[0].reason): \(length)"
+        ' < $tmpfile
+
+        set_color '#EBCB8B'
+        echo ""
+        echo "  By Org / Owner:"
+        set_color normal
+        jq -r '
+          group_by(.repository.owner.login) |
+          sort_by(-length) |
+          .[] |
+          "    \(.[0].repository.owner.login): \(length)"
+        ' < $tmpfile
+
+        set_color '#EBCB8B'
+        echo ""
+        echo "  Noise estimate (would be dismissed by cleanup-noise):"
+        set_color normal
+        set noise (jq '
+          [
+            .[] | select(
+              (
+                (.subject.title | ascii_downcase | test("failed|merged|closed")) or
+                (.reason == "state_change")
+              ) and not (
+                .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
+              )
+            )
+          ] | length
+        ' < $tmpfile)
+        echo "    $noise notification(s) would be dismissed"
+        echo "    (run: task preview  to see details)"
+
+        rm $tmpfile
+        echo ""
+        set_color '#A3BE8C'
+        echo "  Total unread: $total"
+        set_color normal
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # preview: Dry run — show what cleanup-noise WOULD dismiss (no changes made)
+  # ---------------------------------------------------------------------------
+  preview:
+    desc: "Dry run of cleanup-noise — shows what would be dismissed without making any changes"
+    silent: true
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set_color '#EBCB8B'
+        echo ""
+        echo "  [DRY RUN] cleanup-noise preview — no changes will be made"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set tmpfile (mktemp)
+
+        set_color '#88C0D0'
+        echo "  Fetching all unread notifications..."
+        set_color normal
+
+        gh api /notifications --paginate --jq '.[]' | jq -s '.' > $tmpfile
+
+        set to_dismiss (jq '
+          [
+            .[] | select(
+              (
+                (.subject.title | ascii_downcase | test("failed|merged|closed")) or
+                (.reason == "state_change")
+              ) and not (
+                .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
+              )
+            )
+          ] | sort_by(.repository.full_name)
+        ' < $tmpfile)
+
+        set to_preserve (jq '
+          [
+            .[] | select(
+              .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
+            )
+          ] | sort_by(.repository.full_name)
+        ' < $tmpfile)
+
+        set dismiss_count (echo $to_dismiss | jq 'length')
+        set preserve_count (echo $to_preserve | jq 'length')
+
+        set_color '#BF616A'
+        echo ""
+        echo "  Would DISMISS ($dismiss_count):"
+        set_color normal
+        echo $to_dismiss | jq -r '.[] | "    [\(.reason)] \(.repository.full_name) — \(.subject.title)"'
+
+        set_color '#A3BE8C'
+        echo ""
+        echo "  Would PRESERVE ($preserve_count — sous-chefs Issues):"
+        set_color normal
+        echo $to_preserve | jq -r '.[] | "    [\(.reason)] \(.repository.full_name) — \(.subject.title)"'
+
+        rm $tmpfile
+
+        echo ""
+        set_color '#EBCB8B'
+        echo "  Run 'task cleanup-noise' to apply these dismissals."
+        set_color normal
+        echo ""
+
+  # ---------------------------------------------------------------------------
+  # mark-repo-read: Mark all notifications for a specific repo as read
+  # Usage: task mark-repo-read REPO=owner/repo
+  # ---------------------------------------------------------------------------
+  mark-repo-read:
+    desc: "Mark all unread notifications for REPO=owner/repo as read  (e.g. task mark-repo-read REPO=sous-chefs/apache2)"
+    silent: true
+    vars:
+      REPO: '{{.REPO | default ""}}'
+    preconditions:
+      - sh: '[ -n "{{.REPO}}" ]'
+        msg: "REPO is required. Usage: task mark-repo-read REPO=owner/repo"
+    cmds:
+      - |
+        #!/usr/bin/env fish
+
+        set REPO "{{.REPO}}"
+
+        set_color '#88C0D0'
+        echo ""
+        echo "  Marking notifications read for: $REPO"
+        echo "  ══════════════════════════════════════════════════"
+        set_color normal
+
+        set tmpfile (mktemp)
+        gh api /notifications --paginate --jq '.[]' | jq -s --arg repo "$REPO" '
+          [ .[] | select(.repository.full_name == $repo) ]
+        ' > $tmpfile
+
+        set count (jq 'length' < $tmpfile)
+
+        if test $count -eq 0
+          set_color '#A3BE8C'
+          echo "  No unread notifications found for $REPO"
+          set_color normal
+          rm $tmpfile
+          echo ""
+          exit 0
+        end
+
+        set_color '#EBCB8B'
+        echo "  Found $count notification(s) — marking as read..."
+        set_color normal
+
+        set marked 0
+        for id in (jq -r '.[].id' < $tmpfile)
+          gh api --method PATCH /notifications/threads/$id > /dev/null
+          set marked (math $marked + 1)
+        end
+
+        rm $tmpfile
+
+        echo ""
+        set_color '#A3BE8C'
+        echo "  ✔  Marked $marked notification(s) as read for $REPO"
+        set_color normal
+        echo ""
