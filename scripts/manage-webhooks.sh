@@ -19,20 +19,21 @@ check_webhooks() {
   local repo=$1
   echo "🔍 Checking webhooks for $ORG/$repo..."
 
-  # Get all webhooks for the repository
-  WEBHOOKS=$(gh api "repos/$ORG/$repo/hooks" --jq '.[] | {id: .id, name: .name, active: .active, url: .config.url}' 2>/dev/null || echo "[]")
+  # Fetch once; reuse for display and count (was 2 API calls)
+  local WEBHOOKS_JSON
+  WEBHOOKS_JSON=$(gh api "repos/$ORG/$repo/hooks" 2>/dev/null || echo "[]")
 
-  if [[ "$WEBHOOKS" = "[]" ]]; then
+  if [[ "$WEBHOOKS_JSON" = "[]" ]]; then
     echo "  ℹ️  No webhooks found"
     return 0
   fi
 
   # Parse and display webhook status
-  echo "$WEBHOOKS" | jq -r 'select(.active == false) | "  ✅ Webhook \(.id) (\(.name)) - DISABLED - \(.url)"'
-  echo "$WEBHOOKS" | jq -r 'select(.active == true) | "  ⚠️  Webhook \(.id) (\(.name)) - ACTIVE - \(.url)"'
+  echo "$WEBHOOKS_JSON" | jq -r '.[] | select(.active == false) | "  ✅ Webhook \(.id) (\(.name)) - DISABLED - \(.config.url)"'
+  echo "$WEBHOOKS_JSON" | jq -r '.[] | select(.active == true) | "  ⚠️  Webhook \(.id) (\(.name)) - ACTIVE - \(.config.url)"'
 
-  # Count active webhooks properly
-  ACTIVE_COUNT=$(gh api "repos/$ORG/$repo/hooks" --jq '[.[] | select(.active == true)] | length' 2>/dev/null || echo "0")
+  local ACTIVE_COUNT
+  ACTIVE_COUNT=$(echo "$WEBHOOKS_JSON" | jq '[.[] | select(.active == true)] | length')
 
   if [[ "$ACTIVE_COUNT" -eq 0 ]]; then
     echo "  ✅ All webhooks are disabled"

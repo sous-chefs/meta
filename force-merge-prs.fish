@@ -44,9 +44,10 @@ for repo in $REPOS
 
     echo "  ✅ Found PR #$pr_number"
 
-    # Get PR details
-    set pr_title (gh pr view $pr_number --repo sous-chefs/$repo --json title --jq .title)
-    set pr_state (gh pr view $pr_number --repo sous-chefs/$repo --json state --jq .state)
+    # Get PR details in a single call (was 2 separate gh pr view calls)
+    set pr_data  (gh pr view $pr_number --repo sous-chefs/$repo --json title,state)
+    set pr_title (echo $pr_data | jq -r .title)
+    set pr_state (echo $pr_data | jq -r .state)
 
     echo "  📋 Title: $pr_title"
     echo "  📊 State: $pr_state"
