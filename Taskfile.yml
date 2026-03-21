@@ -69,41 +69,33 @@ tasks:
         set tmpfile (mktemp)
         gh api /notifications --paginate --jq '.[]' | jq -s '.' > $tmpfile
 
-        set total (jq 'length' < $tmpfile)
+        # Single jq pass: compute total, dismiss IDs, and preserve count together
+        set parsed (jq -c '{
+          total: length,
+          dismiss_ids: [.[] | select(
+            ((.subject.title | ascii_downcase | test("failed|merged|closed")) or
+             (.reason == "state_change"))
+            and not (.repository.owner.login == "sous-chefs" and .subject.type == "Issue")
+          ) | .id],
+          preserve_count: ([.[] | select(
+            .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
+          )] | length)
+        }' < $tmpfile)
+        rm $tmpfile
+
+        set total          (echo $parsed | jq '.total')
+        set dismiss_ids    (echo $parsed | jq -r '.dismiss_ids[]')
+        set preserve_count (echo $parsed | jq '.preserve_count')
+        set dismiss_count  (count $dismiss_ids)
 
         set_color '#88C0D0'
         echo "  Found $total unread notification(s) total"
         set_color normal
 
-        # Build list of thread IDs to dismiss
-        set dismiss_ids (jq -r '
-          [
-            .[] | select(
-              (
-                (.subject.title | ascii_downcase | test("failed|merged|closed")) or
-                (.reason == "state_change")
-              ) and not (
-                .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
-              )
-            ) | .id
-          ] | .[]
-        ' < $tmpfile)
-
-        set preserve_count (jq '
-          [
-            .[] | select(
-              .repository.owner.login == "sous-chefs" and .subject.type == "Issue"
-            )
-          ] | length
-        ' < $tmpfile)
-
-        set dismiss_count (count $dismiss_ids)
-
         if test $dismiss_count -eq 0
           set_color '#A3BE8C'
           echo "  Nothing to dismiss — inbox is clean!"
           set_color normal
-          rm $tmpfile
           exit 0
         end
 
@@ -111,16 +103,17 @@ tasks:
         echo "  Dismissing $dismiss_count notification(s)..."
         set_color normal
 
+        # Fire PATCH calls in batches of 10 concurrent requests
         set marked 0
         for id in $dismiss_ids
-          gh api --method PATCH /notifications/threads/$id > /dev/null
+          gh api --method PATCH /notifications/threads/$id > /dev/null &
           set marked (math $marked + 1)
-          if test (math "$marked % 25") -eq 0
+          if test (math "$marked % 10") -eq 0
+            wait
             echo "    ... $marked / $dismiss_count dismissed"
           end
         end
-
-        rm $tmpfile
+        wait
 
         echo ""
         set_color '#A3BE8C'

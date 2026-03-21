@@ -21,13 +21,17 @@ set found_count 0
 set pr_count 0
 
 for repo in $REPOS
-    # Search for PRs matching the title pattern
-    set pr_numbers (gh pr list --repo sous-chefs/$repo --json number,title --jq ".[] | select(.title | contains(\"$TITLE_PATTERN\")) | .number" 2>/dev/null)
-    
-    if test -n "$pr_numbers"
+    # Fetch number and title together; filter in jq — no separate gh pr view needed
+    set pr_data (gh pr list --repo sous-chefs/$repo --json number,title \
+        --jq ".[] | select(.title | contains(\"$TITLE_PATTERN\")) | [(.number|tostring), .title] | @tsv" \
+        2>/dev/null)
+
+    if test -n "$pr_data"
         echo "📦 $repo"
-        for pr_number in $pr_numbers
-            set pr_title (gh pr view $pr_number --repo sous-chefs/$repo --json title --jq .title)
+        for entry in $pr_data
+            set cols      (string split \t -- $entry)
+            set pr_number $cols[1]
+            set pr_title  $cols[2]
             echo "  Opening PR #$pr_number - $pr_title"
             gh pr view $pr_number --repo sous-chefs/$repo --web
             set pr_count (math $pr_count + 1)
