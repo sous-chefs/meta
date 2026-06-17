@@ -1,0 +1,3111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sous Chefs Custom Resource Status</title>
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --paper: #fffdf8;
+      --ink: #17202b;
+      --muted: #667085;
+      --line: #d8cfbf;
+      --green: #166448;
+      --green-bg: #def5ea;
+      --blue: #0d5e92;
+      --blue-bg: #e2f0fb;
+      --amber: #9a5b00;
+      --amber-bg: #fff0cb;
+      --red: #9f372d;
+      --red-bg: #ffe2dd;
+      --violet: #61479d;
+      --violet-bg: #ece6ff;
+      --slate: #3e4b5c;
+      --slate-bg: #e9edf2;
+      --shadow: 0 20px 44px rgba(23, 32, 43, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(23, 32, 43, 0.035) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(23, 32, 43, 0.035) 1px, transparent 1px),
+        var(--bg);
+      background-size: 26px 26px;
+      font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(1320px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 36px 0 56px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 240px;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 860px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: 0.96;
+    }
+
+    .subtitle {
+      margin: 14px 0 0;
+      max-width: 860px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .stamp {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      background: rgba(255, 253, 248, 0.82);
+      box-shadow: var(--shadow);
+    }
+
+    .stamp span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .stamp strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 10px 24px rgba(23, 32, 43, 0.05);
+    }
+
+    .metric b {
+      display: block;
+      font-size: 30px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .boards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .board {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .board h2 {
+      margin: 0 0 10px;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .board ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .board li + li {
+      margin-top: 6px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    input, select {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 12px;
+      font: inherit;
+    }
+
+    input {
+      min-width: min(360px, 100%);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1160px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #ece4d6;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: #efe5d5;
+      color: #3d4654;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.07em;
+    }
+
+    tbody tr:hover {
+      background: #fff8eb;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .badge, .flag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .migrated { color: var(--green); background: var(--green-bg); }
+    .mostly { color: var(--blue); background: var(--blue-bg); }
+    .partial { color: var(--amber); background: var(--amber-bg); }
+    .none { color: var(--red); background: var(--red-bg); }
+    .review { color: var(--violet); background: var(--violet-bg); }
+    .flag {
+      margin: 0 6px 6px 0;
+      color: var(--slate);
+      background: var(--slate-bg);
+    }
+
+    .code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #f2eadc;
+      border: 1px solid #e1d7c5;
+      border-radius: 6px;
+      padding: 1px 5px;
+    }
+
+    .footnote {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 980px) {
+      header, .summary, .boards {
+        grid-template-columns: 1fr;
+      }
+
+      h1 { font-size: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Custom resource status board</h1>
+        <p class="subtitle">Structural inventory for Sous Chefs cookbooks in <span class="code">/Users/damacus/repos/sous-chefs</span>. This rebuild is generated from the local checkout, with explicit slices for resource-first repos, legacy cleanup, decision queue, and deprecation candidates.</p>
+      </div>
+      <div class="stamp">
+        <span>Total cookbooks</span>
+        <strong>167</strong>
+      </div>
+    </header>
+
+    <section class="summary" aria-label="Status summary">
+      <div class="metric"><b>136</b><span>Migrated</span></div>
+      <div class="metric"><b>9</b><span>Mostly migrated</span></div>
+      <div class="metric"><b>10</b><span>Legacy cleanup</span></div>
+      <div class="metric"><b>10</b><span>No custom resources</span></div>
+      <div class="metric"><b>2</b><span>Decision queue</span></div>
+      <div class="metric"><b>11</b><span>Deprecate candidate</span></div>
+    </section>
+
+    <section class="boards" aria-label="Decision boards">
+      <div class="board">
+        <h2>Decision Queue</h2>
+        <ul>
+          <li><strong>chef_auto_accumulator</strong> <span class="muted">This repo is still dominated by library code with only a thin resource wrapper. Decide whether it belongs in the migration program or needs a different lifecycle. Flags: Decision needed, Library-heavy.</span></li>
+            <li><strong>netplan</strong> <span class="muted">No public cookbook surface remains locally. Decide whether to archive it or redefine it with an explicit resource API. Flags: Decision needed, Deprecation candidate.</span></li>
+        </ul>
+      </div>
+      <div class="board">
+        <h2>Deprecation Candidates</h2>
+        <ul>
+          <li><strong>netplan</strong> <span class="muted">No public cookbook surface remains locally. Decide whether to archive it or redefine it with an explicit resource API. Flags: Decision needed, Deprecation candidate.</span></li>
+            <li><strong>iis_urlrewrite</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>notepadpp</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>passenger_apache2</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>pulledpork</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>resharper</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>sysinternals</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>unifi</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>vcruntime</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>vim</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+            <li><strong>wix</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Table controls">
+      <div class="control-group">
+        <input id="search" type="search" placeholder="Filter by cookbook, flag, or action">
+        <select id="status">
+          <option value="">All statuses</option>
+          <option value="Needs decision">Needs decision</option>
+            <option value="No custom resources yet">No custom resources yet</option>
+            <option value="Partial / legacy cleanup">Partial / legacy cleanup</option>
+            <option value="Mostly migrated">Mostly migrated</option>
+            <option value="Migrated">Migrated</option>
+        </select>
+        <select id="flag">
+          <option value="">All flags</option>
+          <option value="Decision needed">Decision needed</option>
+          <option value="Deprecation candidate">Deprecation candidate</option>
+          <option value="Library-heavy">Library-heavy</option>
+          <option value="Migration doc">Migration doc</option>
+          <option value="Limitations doc">Limitations doc</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="table-wrap">
+      <table id="status-table">
+        <thead>
+          <tr>
+            <th>Cookbook</th>
+            <th>Status</th>
+            <th>Flags</th>
+            <th>Resources</th>
+            <th>Unified</th>
+            <th>Recipes</th>
+            <th>Attrs</th>
+            <th>Defs</th>
+            <th>Providers</th>
+            <th>Libraries</th>
+            <th>Next action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <p class="footnote">Generated by <span class="code">meta/scripts/generate-custom-resource-status.rb</span> on 2026-06-17T14:00:18Z. Classification is structural triage from the local checkout, not a test pass/fail signal.</p>
+  </main>
+
+  <script>
+    const rows = [
+  {
+    "name": "chef_auto_accumulator",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "flags": [
+      "Decision needed",
+      "Library-heavy"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 17,
+    "nextAction": "This repo is still dominated by library code with only a thin resource wrapper. Decide whether it belongs in the migration program or needs a different lifecycle. Flags: Decision needed, Library-heavy."
+  },
+  {
+    "name": "netplan",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "flags": [
+      "Decision needed",
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "No public cookbook surface remains locally. Decide whether to archive it or redefine it with an explicit resource API. Flags: Decision needed, Deprecation candidate."
+  },
+  {
+    "name": "iis_urlrewrite",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "notepadpp",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "passenger_apache2",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 4,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "pulledpork",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 4,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "resharper",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "sysinternals",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 3,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "unifi",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 4,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "vcruntime",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 7,
+    "attrs": 6,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "vim",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 4,
+    "attrs": 2,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "wix",
+    "status": "No custom resources yet",
+    "statusClass": "none",
+    "flags": [
+      "Deprecation candidate"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+  },
+  {
+    "name": "aws",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 23,
+    "unified": 23,
+    "recipes": 2,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 1,
+    "libraries": 5,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "freebsd",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 3,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "iis",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 14,
+    "unified": 14,
+    "recipes": 19,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 4,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "openvpn",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 10,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "percona",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 11,
+    "attrs": 3,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 4,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "selinux",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 9,
+    "unified": 9,
+    "recipes": 3,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 3,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "visualstudio",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 6,
+    "attrs": 5,
+    "definitions": 0,
+    "providers": 2,
+    "libraries": 1,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "webpi",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 3,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "windows_dhcp",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 0,
+    "recipes": 1,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 3,
+    "libraries": 0,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "windows_print",
+    "status": "Partial / legacy cleanup",
+    "statusClass": "partial",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 4,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+  },
+  {
+    "name": "ark",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 9,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+  },
+  {
+    "name": "bind",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 14,
+    "unified": 14,
+    "recipes": 1,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit. Flags: Migration doc."
+  },
+  {
+    "name": "kubernetes",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+  },
+  {
+    "name": "lvm",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+      "Library-heavy"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 12,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit. Flags: Library-heavy."
+  },
+  {
+    "name": "mingw",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+  },
+  {
+    "name": "msys2",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 1,
+    "attrs": 1,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+  },
+  {
+    "name": "unbound",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+
+    ],
+    "resources": 16,
+    "unified": 16,
+    "recipes": 1,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+  },
+  {
+    "name": "windows_ad",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+
+    ],
+    "resources": 9,
+    "unified": 0,
+    "recipes": 1,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+  },
+  {
+    "name": "winrm",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 1,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+  },
+  {
+    "name": "apache2",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 40,
+    "unified": 39,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "apparmor",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "appveyor-ci",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "apt",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "aptly",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 9,
+    "unified": 8,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "ark-pr-297",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Library-heavy",
+      "Migration doc",
+      "AGENTS.md"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 10,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc, AGENTS.md."
+  },
+  {
+    "name": "atlantis",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 6,
+    "unified": 6,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "autofs",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "beyondcompare",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 3,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "certificate",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "chef-splunk",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 13,
+    "unified": 12,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 4,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "chef_ca",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "chrony",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "cinc-omnibus",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "confluence",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "consul",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 11,
+    "unified": 10,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "control_groups",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "cpu",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "cron",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "daemontools",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 6,
+    "unified": 5,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "deb_pkg_unautostart",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "dhcp",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 8,
+    "unified": 8,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 3,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "djbdns",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 6,
+    "unified": 5,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "dnsmasq",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "docker",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 24,
+    "unified": 21,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 7,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "docker-engine",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "dpkg_autostart",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "drbd",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "elasticsearch",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 10,
+    "unified": 7,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "elixir",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "emacs",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "erlang",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "etcd",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 7,
+    "unified": 6,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "fail2ban",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 5,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "fastly",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 15,
+    "unified": 13,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "filesystem",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "fileutils",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "firefox",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "firewall",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 24,
+    "unified": 24,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 6,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "foreman",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 8,
+    "unified": 7,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "gems",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "git",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "github",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 3,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "golang",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "gpg",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "grafana",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 59,
+    "unified": 59,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 8,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers."
+  },
+  {
+    "name": "graphite",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 14,
+    "unified": 13,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 4,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "haproxy",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 17,
+    "unified": 15,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 3,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "hashicorp-vault",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 14,
+    "unified": 12,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 5,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "homebrew",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "htpasswd",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "influxdb",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "isc_kea",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 104,
+    "unified": 92,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 3,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "java",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 13,
+    "unified": 8,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 5,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "jenkins",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Library-heavy",
+      "Migration doc",
+      "AGENTS.md"
+    ],
+    "resources": 19,
+    "unified": 18,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 16,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc, AGENTS.md."
+  },
+  {
+    "name": "kafka",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 7,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 3,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "keepalived",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 15,
+    "unified": 15,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "line",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Library-heavy",
+      "Migration doc"
+    ],
+    "resources": 6,
+    "unified": 6,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 13,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc."
+  },
+  {
+    "name": "locales",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "logrotate",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "lvm-pr-288",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 7,
+    "unified": 6,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "mariadb",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 9,
+    "unified": 9,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "maven",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "mcelog",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "memcached",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "motd-tail",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "mysql",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Library-heavy"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 11,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy."
+  },
+  {
+    "name": "nagios",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Library-heavy",
+      "Migration doc"
+    ],
+    "resources": 22,
+    "unified": 22,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 20,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc."
+  },
+  {
+    "name": "nano",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "network_interfaces",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "nexus",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 7,
+    "unified": 5,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "nfs",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "nginx",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 3,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "nginx_simplecgi",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 3,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "nodejs",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 6,
+    "unified": 5,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "npm_lazy",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "nrpe",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "nscd",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "ntp",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "openldap",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "openssh",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "ossec",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 9,
+    "unified": 8,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "packagecloud",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "perl",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "php",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 5,
+    "unified": 5,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "postfix",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 9,
+    "unified": 8,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "postgresql",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Library-heavy"
+    ],
+    "resources": 10,
+    "unified": 10,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 12,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy."
+  },
+  {
+    "name": "powershell",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "prometheus",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 10,
+    "unified": 7,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "pyenv",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 8,
+    "unified": 8,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "redisio",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 7,
+    "unified": 5,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "remote_install",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "reprepro",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "resolver",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "rsync",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "rsyslog",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "ruby_build",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "ruby_rbenv",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 10,
+    "unified": 8,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "rundeck",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 7,
+    "unified": 7,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "rvm",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc",
+      "AGENTS.md"
+    ],
+    "resources": 10,
+    "unified": 7,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc, AGENTS.md."
+  },
+  {
+    "name": "samba",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "sc-chruby",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "sc-mongodb",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 11,
+    "unified": 10,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "sc-nxlog",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 7,
+    "unified": 6,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "sc_vscode",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "sensors",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "seven_zip",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "smartmontools",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "snort",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 5,
+    "unified": 0,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "sql_server",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "squid",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "sssd_ldap",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "stunnel",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "syslog_ng",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 11,
+    "unified": 11,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 8,
+    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers."
+  },
+  {
+    "name": "tftp",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "tomcat",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "transmission",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "trusted_certificate",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "ufw",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "users",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "vagrant",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 2,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "varnish",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 7,
+    "unified": 7,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "winlogbeats",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 1,
+    "unified": 0,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "xinetd",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+
+    ],
+    "resources": 4,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+  },
+  {
+    "name": "yum",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-almalinux",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 15,
+    "unified": 14,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-amazon",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-centos",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 3,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-elrepo",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 5,
+    "unified": 4,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-epel",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-erlang_solutions",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-fedora",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-mysql-community",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-percona",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 0,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "yum-remi-chef",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 13,
+    "unified": 13,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  },
+  {
+    "name": "zabbix-agent",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "flags": [
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "recipes": 0,
+    "attrs": 0,
+    "definitions": 0,
+    "providers": 0,
+    "libraries": 1,
+    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+  }
+];
+
+    const tbody = document.querySelector("#status-table tbody");
+    const search = document.querySelector("#search");
+    const status = document.querySelector("#status");
+    const flag = document.querySelector("#flag");
+
+    function render() {
+      const term = search.value.trim().toLowerCase();
+      const statusValue = status.value;
+      const flagValue = flag.value;
+
+      const filtered = rows.filter((row) => {
+        if (statusValue && row.status !== statusValue) return false;
+        if (flagValue && !row.flags.includes(flagValue)) return false;
+
+        if (!term) return true;
+
+        const haystack = [
+          row.name,
+          row.status,
+          row.flags.join(" "),
+          row.nextAction,
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(term);
+      });
+
+      tbody.innerHTML = "";
+
+      filtered.forEach((row) => {
+        const tr = document.createElement("tr");
+        const flags = row.flags.length
+          ? row.flags.map((entry) => `<span class="flag">${entry}</span>`).join("")
+          : '<span class="muted">-</span>';
+
+        tr.innerHTML = `
+          <td><strong>${row.name}</strong></td>
+          <td><span class="badge ${row.statusClass}">${row.status}</span></td>
+          <td>${flags}</td>
+          <td>${row.resources}</td>
+          <td>${row.unified}</td>
+          <td>${row.recipes}</td>
+          <td>${row.attrs}</td>
+          <td>${row.definitions}</td>
+          <td>${row.providers}</td>
+          <td>${row.libraries}</td>
+          <td>${row.nextAction}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    [search, status, flag].forEach((node) => node.addEventListener("input", render));
+    render();
+  </script>
+</body>
+</html>
