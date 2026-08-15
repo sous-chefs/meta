@@ -94,7 +94,7 @@
 
     .summary {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       margin-bottom: 16px;
     }
@@ -123,7 +123,7 @@
 
     .boards {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
       margin-bottom: 16px;
     }
@@ -152,6 +152,14 @@
     .board li + li {
       margin-top: 6px;
     }
+
+    a {
+      color: var(--blue);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+    }
+
+    a:hover { color: var(--ink); }
 
     .controls {
       display: flex;
@@ -197,7 +205,7 @@
 
     table {
       width: 100%;
-      min-width: 1160px;
+      min-width: 1420px;
       border-collapse: collapse;
     }
 
@@ -265,6 +273,12 @@
 
     .muted { color: var(--muted); }
 
+    .pr-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
     @media (max-width: 980px) {
       header, .summary, .boards {
         grid-template-columns: 1fr;
@@ -279,45 +293,63 @@
     <header>
       <div>
         <h1>Custom resource status board</h1>
-        <p class="subtitle">Structural inventory for Sous Chefs cookbooks in <span class="code">/Users/damacus/repos/sous-chefs</span>. This rebuild is generated from the local checkout, with explicit slices for resource-first repos, legacy cleanup, decision queue, and deprecation candidates.</p>
+        <p class="subtitle">A current inventory of active Sous Chefs cookbooks. It shows custom resource progress, Policyfile adoption, open migration work, and the repositories that need a maintainer decision.</p>
       </div>
       <div class="stamp">
         <span>Total cookbooks</span>
-        <strong>167</strong>
+        <strong>169</strong>
       </div>
     </header>
 
     <section class="summary" aria-label="Status summary">
-      <div class="metric"><b>136</b><span>Migrated</span></div>
-      <div class="metric"><b>9</b><span>Mostly migrated</span></div>
-      <div class="metric"><b>10</b><span>Legacy cleanup</span></div>
-      <div class="metric"><b>10</b><span>No custom resources</span></div>
-      <div class="metric"><b>2</b><span>Decision queue</span></div>
-      <div class="metric"><b>11</b><span>Deprecate candidate</span></div>
+      <div class="metric"><b>102</b><span>Migrated</span></div>
+      <div class="metric"><b>33</b><span>Mostly migrated</span></div>
+      <div class="metric"><b>21</b><span>Legacy cleanup</span></div>
+      <div class="metric"><b>4</b><span>No custom resources</span></div>
+      <div class="metric"><b>9</b><span>Decision queue</span></div>
+      <div class="metric"><b>1</b><span>Deprecate candidate</span></div>
+      <div class="metric"><b>127</b><span>Policyfile</span></div>
+      <div class="metric"><b>42</b><span>Berksfile only</span></div>
     </section>
 
     <section class="boards" aria-label="Decision boards">
       <div class="board">
         <h2>Decision Queue</h2>
         <ul>
-          <li><strong>chef_auto_accumulator</strong> <span class="muted">This repo is still dominated by library code with only a thin resource wrapper. Decide whether it belongs in the migration program or needs a different lifecycle. Flags: Decision needed, Library-heavy.</span></li>
-            <li><strong>netplan</strong> <span class="muted">No public cookbook surface remains locally. Decide whether to archive it or redefine it with an explicit resource API. Flags: Decision needed, Deprecation candidate.</span></li>
+          <li><a href="https://github.com/sous-chefs/chef_auto_accumulator"><strong>chef_auto_accumulator</strong></a> <span class="muted">Decide whether its dynamic library framework belongs in the custom resource migration programme.</span></li>
+            <li><a href="https://github.com/sous-chefs/kubernetes"><strong>kubernetes</strong></a> <span class="muted">Decide whether to repair or retire the deliberately disabled pod and service resources.</span></li>
+            <li><a href="https://github.com/sous-chefs/passenger_apache2"><strong>passenger_apache2</strong></a> <span class="muted">Confirm ownership and product direction before replacing the recipe API.</span></li>
+            <li><a href="https://github.com/sous-chefs/resharper"><strong>resharper</strong></a> <span class="muted">Confirm ownership and product direction before replacing the recipe API.</span></li>
+            <li><a href="https://github.com/sous-chefs/sysinternals"><strong>sysinternals</strong></a> <span class="muted">Decide whether the Windows recipe API should migrate or be retired.</span></li>
+            <li><a href="https://github.com/sous-chefs/unifi"><strong>unifi</strong></a> <span class="muted">Decide whether the legacy recipe API should migrate or be retired.</span></li>
+            <li><a href="https://github.com/sous-chefs/vcruntime"><strong>vcruntime</strong></a> <span class="muted">Decide whether the Windows recipe API should migrate or be retired.</span></li>
+            <li><a href="https://github.com/sous-chefs/vim"><strong>vim</strong></a> <span class="muted">Decide whether the recipe API should migrate or be retired.</span></li>
+            <li><a href="https://github.com/sous-chefs/wix"><strong>wix</strong></a> <span class="muted">Decide whether the Windows recipe API should migrate or be retired.</span></li>
         </ul>
       </div>
       <div class="board">
-        <h2>Deprecation Candidates</h2>
+        <h2>Blocked Migration PRs</h2>
         <ul>
-          <li><strong>netplan</strong> <span class="muted">No public cookbook surface remains locally. Decide whether to archive it or redefine it with an explicit resource API. Flags: Decision needed, Deprecation candidate.</span></li>
-            <li><strong>iis_urlrewrite</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>notepadpp</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>passenger_apache2</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>pulledpork</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>resharper</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>sysinternals</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>unifi</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>vcruntime</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>vim</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
-            <li><strong>wix</strong> <span class="muted">Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate.</span></li>
+          <li><a href="https://github.com/sous-chefs/gems/pull/44"><strong>gems#44</strong></a> <span class="muted">merge conflicts</span></li>
+            <li><a href="https://github.com/sous-chefs/pulledpork/pull/65"><strong>pulledpork#65</strong></a> <span class="muted">merge conflicts; 10 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/aws/pull/528"><strong>aws#528</strong></a> <span class="muted">merge conflicts</span></li>
+            <li><a href="https://github.com/sous-chefs/djbdns/pull/80"><strong>djbdns#80</strong></a> <span class="muted">merge conflicts; 24 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/firewall/pull/324"><strong>firewall#324</strong></a> <span class="muted">merge conflicts</span></li>
+            <li><a href="https://github.com/sous-chefs/iis/pull/546"><strong>iis#546</strong></a> <span class="muted">merge conflicts; 1 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/mingw/pull/63"><strong>mingw#63</strong></a> <span class="muted">merge conflicts; 4 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/openvpn/pull/260"><strong>openvpn#260</strong></a> <span class="muted">merge conflicts</span></li>
+            <li><a href="https://github.com/sous-chefs/openvpn/pull/253"><strong>openvpn#253</strong></a> <span class="muted">merge conflicts; 1 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/percona/pull/513"><strong>percona#513</strong></a> <span class="muted">124 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/windows_ad/pull/162"><strong>windows_ad#162</strong></a> <span class="muted">merge conflicts; 2 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/haproxy/pull/602"><strong>haproxy#602</strong></a> <span class="muted">23 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/winlogbeats/pull/22"><strong>winlogbeats#22</strong></a> <span class="muted">merge conflicts; 3 failed checks</span></li>
+            <li><a href="https://github.com/sous-chefs/prometheus/pull/32"><strong>prometheus#32</strong></a> <span class="muted">merge conflicts</span></li>
+        </ul>
+      </div>
+      <div class="board">
+        <h2>Deprecation Candidate</h2>
+        <ul>
+          <li><a href="https://github.com/sous-chefs/bot-trainer"><strong>bot-trainer</strong></a> <span class="muted">Keep this test-only cookbook out of the production migration programme.</span></li>
         </ul>
       </div>
     </section>
@@ -328,8 +360,8 @@
         <select id="status">
           <option value="">All statuses</option>
           <option value="Needs decision">Needs decision</option>
-            <option value="No custom resources yet">No custom resources yet</option>
-            <option value="Partial / legacy cleanup">Partial / legacy cleanup</option>
+            <option value="No custom resources">No custom resources</option>
+            <option value="Partial">Partial</option>
             <option value="Mostly migrated">Mostly migrated</option>
             <option value="Migrated">Migrated</option>
         </select>
@@ -338,8 +370,12 @@
           <option value="Decision needed">Decision needed</option>
           <option value="Deprecation candidate">Deprecation candidate</option>
           <option value="Library-heavy">Library-heavy</option>
+          <option value="Policyfile">Policyfile</option>
+          <option value="Berksfile">Berksfile</option>
+          <option value="Open migration PR">Open migration PR</option>
+          <option value="Migration PR blocked">Migration PR blocked</option>
           <option value="Migration doc">Migration doc</option>
-          <option value="Limitations doc">Limitations doc</option>
+          <option value="AGENTS.md">AGENTS.md</option>
         </select>
       </div>
     </section>
@@ -350,14 +386,15 @@
           <tr>
             <th>Cookbook</th>
             <th>Status</th>
+            <th>Dependency</th>
             <th>Flags</th>
             <th>Resources</th>
             <th>Unified</th>
+            <th>Modern gaps</th>
             <th>Recipes</th>
-            <th>Attrs</th>
-            <th>Defs</th>
-            <th>Providers</th>
             <th>Libraries</th>
+            <th>Open PRs</th>
+            <th>Migration PRs</th>
             <th>Next action</th>
           </tr>
         </thead>
@@ -365,7 +402,7 @@
       </table>
     </section>
 
-    <p class="footnote">Generated by <span class="code">meta/scripts/generate-custom-resource-status.rb</span> on 2026-06-17T14:00:18Z. Classification is structural triage from the local checkout, not a test pass/fail signal.</p>
+    <p class="footnote">Generated by <span class="code">meta/scripts/generate-custom-resource-status.rb</span> on 2026-08-15T19:11:02Z from current default branches and live pull request data. The classification measures migration structure; failed checks are shown separately.</p>
   </main>
 
   <script>
@@ -374,2682 +411,3476 @@
     "name": "chef_auto_accumulator",
     "status": "Needs decision",
     "statusClass": "review",
+    "dependency": "Policyfile",
     "flags": [
       "Decision needed",
-      "Library-heavy"
+      "Policyfile"
     ],
-    "resources": 1,
-    "unified": 1,
+    "resources": 0,
+    "unified": 0,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 17,
-    "nextAction": "This repo is still dominated by library code with only a thin resource wrapper. Decide whether it belongs in the migration program or needs a different lifecycle. Flags: Decision needed, Library-heavy."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Decide whether its dynamic library framework belongs in the custom resource migration programme. Flags: Decision needed, Policyfile."
   },
   {
-    "name": "netplan",
+    "name": "kubernetes",
     "status": "Needs decision",
     "statusClass": "review",
+    "dependency": "Berksfile",
     "flags": [
       "Decision needed",
-      "Deprecation candidate"
+      "Berksfile"
     ],
-    "resources": 0,
-    "unified": 0,
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 3,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "No public cookbook surface remains locally. Decide whether to archive it or redefine it with an explicit resource API. Flags: Decision needed, Deprecation candidate."
-  },
-  {
-    "name": "iis_urlrewrite",
-    "status": "No custom resources yet",
-    "statusClass": "none",
-    "flags": [
-      "Deprecation candidate"
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
     ],
-    "resources": 0,
-    "unified": 0,
-    "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
-  },
-  {
-    "name": "notepadpp",
-    "status": "No custom resources yet",
-    "statusClass": "none",
-    "flags": [
-      "Deprecation candidate"
-    ],
-    "resources": 0,
-    "unified": 0,
-    "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "nextAction": "Decide whether to repair or retire the deliberately disabled pod and service resources. Flags: Decision needed, Berksfile."
   },
   {
     "name": "passenger_apache2",
-    "status": "No custom resources yet",
-    "statusClass": "none",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "dependency": "Policyfile",
     "flags": [
-      "Deprecation candidate"
+      "Decision needed",
+      "Policyfile"
     ],
     "resources": 0,
     "unified": 0,
+    "modernGaps": 0,
     "recipes": 4,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
-  },
-  {
-    "name": "pulledpork",
-    "status": "No custom resources yet",
-    "statusClass": "none",
-    "flags": [
-      "Deprecation candidate"
+    "openPrCount": 0,
+    "migrationPrs": [
+
     ],
-    "resources": 0,
-    "unified": 0,
-    "recipes": 4,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "nextAction": "Confirm ownership and product direction before replacing the recipe API. Flags: Decision needed, Policyfile."
   },
   {
     "name": "resharper",
-    "status": "No custom resources yet",
-    "statusClass": "none",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "dependency": "Berksfile",
     "flags": [
-      "Deprecation candidate"
+      "Decision needed",
+      "Berksfile"
     ],
     "resources": 0,
     "unified": 0,
+    "modernGaps": 0,
     "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Confirm ownership and product direction before replacing the recipe API. Flags: Decision needed, Berksfile."
   },
   {
     "name": "sysinternals",
-    "status": "No custom resources yet",
-    "statusClass": "none",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "dependency": "Policyfile",
     "flags": [
-      "Deprecation candidate"
+      "Decision needed",
+      "Policyfile"
     ],
     "resources": 0,
     "unified": 0,
+    "modernGaps": 0,
     "recipes": 3,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Decide whether the Windows recipe API should migrate or be retired. Flags: Decision needed, Policyfile."
   },
   {
     "name": "unifi",
-    "status": "No custom resources yet",
-    "statusClass": "none",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "dependency": "Berksfile",
     "flags": [
-      "Deprecation candidate"
+      "Decision needed",
+      "Berksfile"
     ],
     "resources": 0,
     "unified": 0,
+    "modernGaps": 0,
     "recipes": 4,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Decide whether the legacy recipe API should migrate or be retired. Flags: Decision needed, Berksfile."
   },
   {
     "name": "vcruntime",
-    "status": "No custom resources yet",
-    "statusClass": "none",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "dependency": "Policyfile",
     "flags": [
-      "Deprecation candidate"
+      "Decision needed",
+      "Policyfile"
     ],
     "resources": 0,
     "unified": 0,
+    "modernGaps": 0,
     "recipes": 7,
-    "attrs": 6,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Decide whether the Windows recipe API should migrate or be retired. Flags: Decision needed, Policyfile."
   },
   {
     "name": "vim",
-    "status": "No custom resources yet",
-    "statusClass": "none",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "dependency": "Policyfile",
     "flags": [
-      "Deprecation candidate"
+      "Decision needed",
+      "Policyfile"
     ],
     "resources": 0,
     "unified": 0,
+    "modernGaps": 0,
     "recipes": 4,
-    "attrs": 2,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Decide whether the recipe API should migrate or be retired. Flags: Decision needed, Policyfile."
   },
   {
     "name": "wix",
-    "status": "No custom resources yet",
-    "statusClass": "none",
+    "status": "Needs decision",
+    "statusClass": "review",
+    "dependency": "Policyfile",
     "flags": [
-      "Deprecation candidate"
+      "Decision needed",
+      "Policyfile"
     ],
     "resources": 0,
     "unified": 0,
+    "modernGaps": 0,
     "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Define the public custom resource API, or make a deprecation/archive call if this cookbook is too thin. Flags: Deprecation candidate."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Decide whether the Windows recipe API should migrate or be retired. Flags: Decision needed, Policyfile."
+  },
+  {
+    "name": "gems",
+    "status": "No custom resources",
+    "statusClass": "none",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "modernGaps": 0,
+    "recipes": 3,
+    "libraries": 0,
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 44,
+        "url": "https://github.com/sous-chefs/gems/pull/44",
+        "state": "DIRTY",
+        "failedChecks": 0
+      }
+    ],
+    "nextAction": "Define the public custom resource API or make an owner decision. Flags: Berksfile, Open migration PR, Migration PR blocked."
+  },
+  {
+    "name": "iis_urlrewrite",
+    "status": "No custom resources",
+    "statusClass": "none",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "modernGaps": 0,
+    "recipes": 1,
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Define the public custom resource API or make an owner decision. Flags: Berksfile."
+  },
+  {
+    "name": "notepadpp",
+    "status": "No custom resources",
+    "statusClass": "none",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "modernGaps": 0,
+    "recipes": 1,
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Define the public custom resource API or make an owner decision. Flags: Policyfile, AGENTS.md."
+  },
+  {
+    "name": "pulledpork",
+    "status": "No custom resources",
+    "statusClass": "none",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "Open migration PR",
+      "Migration PR blocked",
+      "AGENTS.md"
+    ],
+    "resources": 0,
+    "unified": 0,
+    "modernGaps": 0,
+    "recipes": 4,
+    "libraries": 0,
+    "openPrCount": 2,
+    "migrationPrs": [
+      {
+        "number": 65,
+        "url": "https://github.com/sous-chefs/pulledpork/pull/65",
+        "state": "DIRTY",
+        "failedChecks": 10
+      }
+    ],
+    "nextAction": "Define the public custom resource API or make an owner decision. Flags: Policyfile, Open migration PR, Migration PR blocked, AGENTS.md."
+  },
+  {
+    "name": "aptly",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 8,
+    "unified": 8,
+    "modernGaps": 1,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "aws",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
     ],
     "resources": 23,
     "unified": 23,
+    "modernGaps": 46,
     "recipes": 2,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 1,
     "libraries": 5,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 528,
+        "url": "https://github.com/sous-chefs/aws/pull/528",
+        "state": "DIRTY",
+        "failedChecks": 0
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile, Open migration PR, Migration PR blocked."
   },
   {
-    "name": "freebsd",
-    "status": "Partial / legacy cleanup",
+    "name": "bot-trainer",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Deprecation candidate",
+      "Berksfile"
     ],
     "resources": 1,
     "unified": 1,
-    "recipes": 3,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "modernGaps": 4,
+    "recipes": 1,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Keep this test-only cookbook out of the production migration programme. Flags: Deprecation candidate, Berksfile."
   },
   {
-    "name": "iis",
-    "status": "Partial / legacy cleanup",
+    "name": "certificate",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "modernGaps": 2,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
 
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile, AGENTS.md."
+  },
+  {
+    "name": "confluence",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 2,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile, AGENTS.md."
+  },
+  {
+    "name": "djbdns",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "Open migration PR",
+      "Migration PR blocked"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "modernGaps": 2,
+    "recipes": 5,
+    "libraries": 0,
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 80,
+        "url": "https://github.com/sous-chefs/djbdns/pull/80",
+        "state": "DIRTY",
+        "failedChecks": 24
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile, Open migration PR, Migration PR blocked."
+  },
+  {
+    "name": "firewall",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Berksfile",
+    "flags": [
+      "Library-heavy",
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
     ],
     "resources": 14,
     "unified": 14,
+    "modernGaps": 45,
+    "recipes": 2,
+    "libraries": 11,
+    "openPrCount": 5,
+    "migrationPrs": [
+      {
+        "number": 324,
+        "url": "https://github.com/sous-chefs/firewall/pull/324",
+        "state": "DIRTY",
+        "failedChecks": 0
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Library-heavy, Berksfile, Open migration PR, Migration PR blocked."
+  },
+  {
+    "name": "firewalld",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Policyfile",
+    "flags": [
+      "Library-heavy",
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 10,
+    "unified": 10,
+    "modernGaps": 60,
+    "recipes": 2,
+    "libraries": 16,
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Library-heavy, Policyfile, AGENTS.md."
+  },
+  {
+    "name": "freebsd",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "modernGaps": 5,
+    "recipes": 3,
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile."
+  },
+  {
+    "name": "iis",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
+    ],
+    "resources": 14,
+    "unified": 14,
+    "modernGaps": 31,
     "recipes": 19,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 4,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 546,
+        "url": "https://github.com/sous-chefs/iis/pull/546",
+        "state": "DIRTY",
+        "failedChecks": 1
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile, Open migration PR, Migration PR blocked."
+  },
+  {
+    "name": "jenkins",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Policyfile",
+    "flags": [
+      "Library-heavy",
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
+    ],
+    "resources": 18,
+    "unified": 18,
+    "modernGaps": 29,
+    "recipes": 0,
+    "libraries": 16,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Library-heavy, Policyfile, Migration doc, AGENTS.md."
+  },
+  {
+    "name": "mingw",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 6,
+    "recipes": 1,
+    "libraries": 1,
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 63,
+        "url": "https://github.com/sous-chefs/mingw/pull/63",
+        "state": "DIRTY",
+        "failedChecks": 4
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile, Open migration PR, Migration PR blocked."
   },
   {
     "name": "openvpn",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 4,
     "recipes": 10,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 2,
+    "migrationPrs": [
+      {
+        "number": 260,
+        "url": "https://github.com/sous-chefs/openvpn/pull/260",
+        "state": "DIRTY",
+        "failedChecks": 0
+      },
+      {
+        "number": 253,
+        "url": "https://github.com/sous-chefs/openvpn/pull/253",
+        "state": "DIRTY",
+        "failedChecks": 1
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile, Open migration PR, Migration PR blocked."
   },
   {
     "name": "percona",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "Open migration PR",
+      "Migration PR blocked",
+      "AGENTS.md"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 4,
     "recipes": 11,
-    "attrs": 3,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 4,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 513,
+        "url": "https://github.com/sous-chefs/percona/pull/513",
+        "state": "BLOCKED",
+        "failedChecks": 124
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile, Open migration PR, Migration PR blocked, AGENTS.md."
+  },
+  {
+    "name": "php",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 5,
+    "unified": 5,
+    "modernGaps": 12,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "selinux",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Berksfile"
     ],
     "resources": 9,
     "unified": 9,
+    "modernGaps": 18,
     "recipes": 3,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 3,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile."
   },
   {
     "name": "visualstudio",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 4,
     "recipes": 6,
-    "attrs": 5,
-    "definitions": 0,
-    "providers": 2,
     "libraries": 1,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile."
   },
   {
     "name": "webpi",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 4,
     "recipes": 3,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 2,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Policyfile."
+  },
+  {
+    "name": "windows_ad",
+    "status": "Partial",
+    "statusClass": "partial",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
+    ],
+    "resources": 9,
+    "unified": 0,
+    "modernGaps": 9,
+    "recipes": 1,
+    "libraries": 2,
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 162,
+        "url": "https://github.com/sous-chefs/windows_ad/pull/162",
+        "state": "DIRTY",
+        "failedChecks": 2
+      }
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile, Open migration PR, Migration PR blocked."
   },
   {
     "name": "windows_dhcp",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Berksfile"
     ],
     "resources": 3,
     "unified": 0,
+    "modernGaps": 6,
     "recipes": 1,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 3,
     "libraries": 0,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile."
   },
   {
     "name": "windows_print",
-    "status": "Partial / legacy cleanup",
+    "status": "Partial",
     "statusClass": "partial",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Berksfile"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 8,
     "recipes": 4,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Remove the remaining legacy root API and supporting provider/definition code before calling this done."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Remove the remaining legacy API or recover the open migration PR. Flags: Berksfile."
   },
   {
     "name": "ark",
     "status": "Mostly migrated",
     "statusClass": "mostly",
+    "dependency": "Policyfile",
     "flags": [
+      "Library-heavy",
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 2,
+    "recipes": 0,
+    "libraries": 10,
+    "openPrCount": 1,
+    "migrationPrs": [
 
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Library-heavy, Policyfile, Migration doc, AGENTS.md."
+  },
+  {
+    "name": "dhcp",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 8,
+    "unified": 8,
+    "modernGaps": 16,
+    "recipes": 0,
+    "libraries": 3,
+    "openPrCount": 2,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "docker",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 21,
+    "unified": 21,
+    "modernGaps": 2,
+    "recipes": 0,
+    "libraries": 7,
+    "openPrCount": 2,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile, AGENTS.md."
+  },
+  {
+    "name": "elasticsearch",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 7,
+    "unified": 7,
+    "modernGaps": 5,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile, AGENTS.md."
+  },
+  {
+    "name": "etcd",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 6,
+    "unified": 6,
+    "modernGaps": 6,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "fileutils",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
     ],
     "resources": 1,
     "unified": 1,
-    "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 9,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
-  },
-  {
-    "name": "bind",
-    "status": "Mostly migrated",
-    "statusClass": "mostly",
-    "flags": [
-      "Migration doc"
-    ],
-    "resources": 14,
-    "unified": 14,
-    "recipes": 1,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
+    "modernGaps": 1,
+    "recipes": 0,
     "libraries": 2,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit. Flags: Migration doc."
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
   },
   {
-    "name": "kubernetes",
+    "name": "github",
     "status": "Mostly migrated",
     "statusClass": "mostly",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Berksfile"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 6,
     "recipes": 0,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
+    "libraries": 3,
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "gpg",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 2,
+    "recipes": 0,
     "libraries": 1,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "haproxy",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "Open migration PR",
+      "Migration PR blocked"
+    ],
+    "resources": 15,
+    "unified": 15,
+    "modernGaps": 30,
+    "recipes": 0,
+    "libraries": 3,
+    "openPrCount": 2,
+    "migrationPrs": [
+      {
+        "number": 602,
+        "url": "https://github.com/sous-chefs/haproxy/pull/602",
+        "state": "BLOCKED",
+        "failedChecks": 23
+      }
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile, Open migration PR, Migration PR blocked."
+  },
+  {
+    "name": "hashicorp-vault",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 11,
+    "unified": 11,
+    "modernGaps": 22,
+    "recipes": 0,
+    "libraries": 5,
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "isc_kea",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 90,
+    "unified": 90,
+    "modernGaps": 180,
+    "recipes": 0,
+    "libraries": 3,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "logrotate",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 6,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
   },
   {
     "name": "lvm",
     "status": "Mostly migrated",
     "statusClass": "mostly",
+    "dependency": "Policyfile",
     "flags": [
-      "Library-heavy"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 1,
-    "unified": 1,
-    "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 12,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit. Flags: Library-heavy."
-  },
-  {
-    "name": "mingw",
-    "status": "Mostly migrated",
-    "statusClass": "mostly",
-    "flags": [
-
-    ],
-    "resources": 3,
-    "unified": 3,
-    "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
+    "resources": 6,
+    "unified": 6,
+    "modernGaps": 14,
+    "recipes": 0,
     "libraries": 1,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
-    "name": "msys2",
+    "name": "mariadb",
     "status": "Mostly migrated",
     "statusClass": "mostly",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 9,
+    "unified": 9,
+    "modernGaps": 4,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 1,
+    "migrationPrs": [
 
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile, AGENTS.md."
+  },
+  {
+    "name": "mysql",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Library-heavy",
+      "Berksfile"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 2,
+    "recipes": 0,
+    "libraries": 11,
+    "openPrCount": 2,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Library-heavy, Berksfile."
+  },
+  {
+    "name": "nano",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 4,
+    "recipes": 0,
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "nginx",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
     ],
     "resources": 4,
     "unified": 4,
-    "recipes": 1,
-    "attrs": 1,
-    "definitions": 0,
-    "providers": 0,
+    "modernGaps": 8,
+    "recipes": 0,
+    "libraries": 3,
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "postgresql",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Library-heavy",
+      "Berksfile"
+    ],
+    "resources": 8,
+    "unified": 8,
+    "modernGaps": 16,
+    "recipes": 0,
+    "libraries": 12,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Library-heavy, Berksfile."
+  },
+  {
+    "name": "pyenv",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 8,
+    "unified": 8,
+    "modernGaps": 16,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 2,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "remote_install",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "modernGaps": 4,
+    "recipes": 0,
+    "libraries": 0,
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "ruby_build",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 4,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "ruby_rbenv",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 8,
+    "unified": 8,
+    "modernGaps": 1,
+    "recipes": 0,
     "libraries": 2,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "rundeck",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 7,
+    "unified": 7,
+    "modernGaps": 9,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "samba",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 3,
+    "recipes": 0,
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "sc-chruby",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 1,
+    "unified": 1,
+    "modernGaps": 1,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "sc_vscode",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 4,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "seven_zip",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 4,
+    "recipes": 0,
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "snort",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 5,
+    "unified": 0,
+    "modernGaps": 10,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "sql_server",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 6,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile."
+  },
+  {
+    "name": "syslog_ng",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile"
+    ],
+    "resources": 11,
+    "unified": 11,
+    "modernGaps": 22,
+    "recipes": 0,
+    "libraries": 8,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile."
+  },
+  {
+    "name": "tomcat",
+    "status": "Mostly migrated",
+    "statusClass": "mostly",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "Migration doc"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 2,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Policyfile, Migration doc."
   },
   {
     "name": "unbound",
     "status": "Mostly migrated",
     "statusClass": "mostly",
+    "dependency": "Berksfile",
     "flags": [
-
+      "Berksfile",
+      "Open migration PR",
+      "Migration doc"
     ],
-    "resources": 16,
-    "unified": 16,
-    "recipes": 1,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
+    "resources": 15,
+    "unified": 15,
+    "modernGaps": 15,
+    "recipes": 0,
     "libraries": 2,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 105,
+        "url": "https://github.com/sous-chefs/unbound/pull/105",
+        "state": "BLOCKED",
+        "failedChecks": 0
+      }
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile, Open migration PR, Migration doc."
   },
   {
-    "name": "windows_ad",
+    "name": "winlogbeats",
     "status": "Mostly migrated",
     "statusClass": "mostly",
+    "dependency": "Berksfile",
     "flags": [
-
-    ],
-    "resources": 9,
-    "unified": 0,
-    "recipes": 1,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
-  },
-  {
-    "name": "winrm",
-    "status": "Mostly migrated",
-    "statusClass": "mostly",
-    "flags": [
-
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked"
     ],
     "resources": 1,
-    "unified": 1,
-    "recipes": 1,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
+    "unified": 0,
+    "modernGaps": 2,
+    "recipes": 0,
     "libraries": 0,
-    "nextAction": "Finish the last recipe/attribute/provider holdouts or make the compatibility surface explicit."
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 22,
+        "url": "https://github.com/sous-chefs/winlogbeats/pull/22",
+        "state": "DIRTY",
+        "failedChecks": 3
+      }
+    ],
+    "nextAction": "Finish the remaining resource markers or imperative cleanup. Flags: Berksfile, Open migration PR, Migration PR blocked."
   },
   {
     "name": "apache2",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 39,
+    "unified": 39,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 40,
-    "unified": 39,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "apparmor",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "appveyor-ci",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "apt",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "aptly",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 9,
-    "unified": 8,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "ark-pr-297",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Library-heavy",
-      "Migration doc",
-      "AGENTS.md"
-    ],
-    "resources": 2,
-    "unified": 2,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 10,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc, AGENTS.md."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "atlantis",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 6,
     "unified": 6,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "autofs",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "beyondcompare",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 3,
+    "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "certificate",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 1,
-    "unified": 1,
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
+  },
+  {
+    "name": "bind",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "dependency": "Berksfile",
+    "flags": [
+      "Berksfile",
+      "Migration doc"
+    ],
+    "resources": 14,
+    "unified": 14,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "chef-splunk",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 13,
+    "resources": 12,
     "unified": 12,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 4,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "chef_ca",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "chrony",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "cinc-omnibus",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 1,
-    "unified": 1,
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "confluence",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 4,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "consul",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile"
+    ],
+    "resources": 10,
+    "unified": 10,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 11,
-    "unified": 10,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "control_groups",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 4,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "cpu",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "cron",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "daemontools",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile"
+    ],
+    "resources": 5,
+    "unified": 5,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 6,
-    "unified": 5,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "deb_pkg_unautostart",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "dhcp",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 8,
-    "unified": 8,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 3,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "djbdns",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Migration doc"
-    ],
-    "resources": 6,
-    "unified": 5,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "dnsmasq",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
-    "resources": 5,
+    "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "docker",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 24,
-    "unified": 21,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 7,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "docker-engine",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 5,
+    "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "dpkg_autostart",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "drbd",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "elasticsearch",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 10,
-    "unified": 7,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "elixir",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "emacs",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "erlang",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "etcd",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 7,
-    "unified": 6,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "fail2ban",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 5,
     "unified": 5,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "fastly",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 15,
+    "resources": 13,
     "unified": 13,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "filesystem",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "fileutils",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 1,
-    "unified": 1,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "firefox",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "firewall",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Migration doc"
+    "openPrCount": 0,
+    "migrationPrs": [
+
     ],
-    "resources": 24,
-    "unified": 24,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 6,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "foreman",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
-    "resources": 8,
+    "resources": 7,
     "unified": 7,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "gems",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Migration doc"
+    "openPrCount": 0,
+    "migrationPrs": [
+
     ],
-    "resources": 2,
-    "unified": 2,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "git",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "github",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 3,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 3,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "golang",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "gpg",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 2,
-    "unified": 2,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "grafana",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile"
+    ],
+    "resources": 57,
+    "unified": 57,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 8,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 59,
-    "unified": 59,
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
+  },
+  {
+    "name": "grafana-alloy",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 4,
+    "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 8,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers."
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "graphite",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
-    "resources": 14,
+    "resources": 13,
     "unified": 13,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 4,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "haproxy",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 17,
-    "unified": 15,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 3,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "hashicorp-vault",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
-    ],
-    "resources": 14,
-    "unified": 12,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 5,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "homebrew",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
-    "resources": 5,
+    "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "htpasswd",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "influxdb",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "isc_kea",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 104,
-    "unified": 92,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 3,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "java",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
-    ],
-    "resources": 13,
-    "unified": 8,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 5,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "jenkins",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Library-heavy",
-      "Migration doc",
+      "Policyfile",
       "AGENTS.md"
     ],
-    "resources": 19,
-    "unified": 18,
+    "resources": 8,
+    "unified": 8,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 16,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc, AGENTS.md."
+    "libraries": 5,
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "kafka",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
-    "resources": 7,
+    "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 3,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "keepalived",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 15,
     "unified": 15,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "line",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
       "Library-heavy",
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 6,
     "unified": 6,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 13,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Library-heavy, Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "locales",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "logrotate",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 3,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "lvm-pr-288",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Migration doc"
-    ],
-    "resources": 7,
-    "unified": 6,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "mariadb",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
-    ],
-    "resources": 9,
-    "unified": 9,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "maven",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "mcelog",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "memcached",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "motd-tail",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
-    "name": "mysql",
+    "name": "msys2",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Library-heavy"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 2,
-    "unified": 2,
+    "resources": 4,
+    "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 11,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy."
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "nagios",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
       "Library-heavy",
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 22,
     "unified": 22,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 20,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy, Migration doc."
-  },
-  {
-    "name": "nano",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "libraries": 19,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 2,
-    "unified": 2,
+    "nextAction": "Resource migration is complete. Flags: Library-heavy, Policyfile, Migration doc, AGENTS.md."
+  },
+  {
+    "name": "netplan",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 6,
+    "unified": 6,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "network_interfaces",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "nexus",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
-    "resources": 7,
+    "resources": 5,
     "unified": 5,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "nfs",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
-    ],
-    "resources": 5,
-    "unified": 4,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "nginx",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 3,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "nginx_simplecgi",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 3,
+    "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "nodejs",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
-    "resources": 6,
+    "resources": 5,
     "unified": 5,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "npm_lazy",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "nrpe",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "nscd",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "ntp",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "openldap",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "openssh",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile"
+    ],
+    "resources": 3,
+    "unified": 3,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 1,
+    "migrationPrs": [
 
     ],
-    "resources": 4,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile."
   },
   {
     "name": "ossec",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 8,
+    "unified": 8,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 1,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 9,
-    "unified": 8,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "packagecloud",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "perl",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "php",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 5,
-    "unified": 5,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "postfix",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 9,
+    "resources": 8,
     "unified": 8,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "postgresql",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Library-heavy"
+    "openPrCount": 0,
+    "migrationPrs": [
+
     ],
-    "resources": 10,
-    "unified": 10,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 12,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers. Flags: Library-heavy."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "powershell",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile"
+    ],
+    "resources": 4,
+    "unified": 4,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 2,
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 5,
-    "unified": 4,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile."
   },
   {
     "name": "prometheus",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
+      "Open migration PR",
+      "Migration PR blocked",
       "Migration doc"
     ],
-    "resources": 10,
+    "resources": 7,
     "unified": 7,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "pyenv",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
+    "openPrCount": 1,
+    "migrationPrs": [
+      {
+        "number": 32,
+        "url": "https://github.com/sous-chefs/prometheus/pull/32",
+        "state": "DIRTY",
+        "failedChecks": 0
+      }
     ],
-    "resources": 8,
-    "unified": 8,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Open migration PR, Migration PR blocked, Migration doc."
   },
   {
     "name": "redisio",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "AGENTS.md"
     ],
-    "resources": 7,
+    "resources": 5,
     "unified": 5,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "remote_install",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 1,
-    "unified": 1,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "reprepro",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "resolver",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "rsync",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "rsyslog",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
-    "resources": 5,
+    "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "ruby_build",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 1,
+    "migrationPrs": [
 
     ],
-    "resources": 3,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "ruby_rbenv",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
-    ],
-    "resources": 10,
-    "unified": 8,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "rundeck",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
-    ],
-    "resources": 7,
-    "unified": 7,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "rvm",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc",
       "AGENTS.md"
     ],
-    "resources": 10,
+    "resources": 7,
     "unified": 7,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc, AGENTS.md."
-  },
-  {
-    "name": "samba",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 3,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "sc-chruby",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
-    ],
-    "resources": 1,
-    "unified": 1,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "sc-mongodb",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
-    "resources": 11,
+    "resources": 10,
     "unified": 10,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "sc-nxlog",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
-    "resources": 7,
+    "resources": 6,
     "unified": 6,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "sc_vscode",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 2,
-    "unified": 2,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "sensors",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "seven_zip",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 2,
-    "unified": 2,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "smartmontools",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "snort",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 5,
-    "unified": 0,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "sql_server",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-
-    ],
-    "resources": 3,
-    "unified": 3,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "squid",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "sssd_ldap",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "stunnel",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
-  },
-  {
-    "name": "syslog_ng",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
-    "resources": 11,
-    "unified": 11,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 8,
-    "nextAction": "Resource-first, but library-heavy. Maintain and only revisit when refactoring internal helpers."
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "tftp",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "tomcat",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
-      "Migration doc"
+    "openPrCount": 0,
+    "migrationPrs": [
+
     ],
-    "resources": 2,
-    "unified": 2,
-    "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
-    "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "transmission",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
-    "resources": 5,
+    "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "trusted_certificate",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "ufw",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile."
   },
   {
     "name": "users",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 1,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "vagrant",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 3,
     "unified": 3,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 2,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
+  },
+  {
+    "name": "valkey",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "AGENTS.md"
+    ],
+    "resources": 2,
+    "unified": 2,
+    "modernGaps": 0,
+    "recipes": 0,
+    "libraries": 0,
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "varnish",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 7,
     "unified": 7,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
-  },
-  {
-    "name": "winlogbeats",
-    "status": "Migrated",
-    "statusClass": "migrated",
-    "flags": [
+    "openPrCount": 0,
+    "migrationPrs": [
 
     ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
+  },
+  {
+    "name": "winrm",
+    "status": "Migrated",
+    "statusClass": "migrated",
+    "dependency": "Policyfile",
+    "flags": [
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
+    ],
     "resources": 1,
-    "unified": 0,
+    "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "xinetd",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "yum",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "yum-almalinux",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
-    "resources": 15,
+    "resources": 14,
     "unified": 14,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "yum-amazon",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "yum-centos",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "AGENTS.md"
     ],
-    "resources": 3,
+    "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, AGENTS.md."
   },
   {
     "name": "yum-elrepo",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 5,
+    "resources": 4,
     "unified": 4,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "yum-epel",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "yum-erlang_solutions",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "yum-fedora",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   },
   {
     "name": "yum-mysql-community",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "yum-percona",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Berksfile",
     "flags": [
+      "Berksfile",
       "Migration doc"
     ],
     "resources": 1,
     "unified": 1,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 0,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete; replace Berksfile with Policyfile. Flags: Berksfile, Migration doc."
   },
   {
     "name": "yum-remi-chef",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
-      "Migration doc"
+      "Policyfile",
+      "Migration doc",
+      "AGENTS.md"
     ],
-    "resources": 13,
-    "unified": 13,
+    "resources": 12,
+    "unified": 12,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc, AGENTS.md."
   },
   {
     "name": "zabbix-agent",
     "status": "Migrated",
     "statusClass": "migrated",
+    "dependency": "Policyfile",
     "flags": [
+      "Policyfile",
       "Migration doc"
     ],
     "resources": 2,
     "unified": 2,
+    "modernGaps": 0,
     "recipes": 0,
-    "attrs": 0,
-    "definitions": 0,
-    "providers": 0,
     "libraries": 1,
-    "nextAction": "Resource-first. Maintain and spot-check ChefSpec/Kitchen when changing behavior. Flags: Migration doc."
+    "openPrCount": 0,
+    "migrationPrs": [
+
+    ],
+    "nextAction": "Resource migration is complete. Flags: Policyfile, Migration doc."
   }
 ];
 
@@ -3072,6 +3903,7 @@
         const haystack = [
           row.name,
           row.status,
+          row.dependency,
           row.flags.join(" "),
           row.nextAction,
         ].join(" ").toLowerCase();
@@ -3086,18 +3918,25 @@
         const flags = row.flags.length
           ? row.flags.map((entry) => `<span class="flag">${entry}</span>`).join("")
           : '<span class="muted">-</span>';
+        const migrationPrs = row.migrationPrs.length
+          ? row.migrationPrs.map((pr) => {
+              const failures = pr.failedChecks ? `, ${pr.failedChecks} failed` : "";
+              return `<a href="${pr.url}">#${pr.number}</a><span class="muted"> ${pr.state.toLowerCase()}${failures}</span>`;
+            }).join("<br>")
+          : '<span class="muted">-</span>';
 
         tr.innerHTML = `
-          <td><strong>${row.name}</strong></td>
+          <td><a href="https://github.com/sous-chefs/${row.name}"><strong>${row.name}</strong></a></td>
           <td><span class="badge ${row.statusClass}">${row.status}</span></td>
+          <td>${row.dependency}</td>
           <td>${flags}</td>
           <td>${row.resources}</td>
           <td>${row.unified}</td>
+          <td>${row.modernGaps}</td>
           <td>${row.recipes}</td>
-          <td>${row.attrs}</td>
-          <td>${row.definitions}</td>
-          <td>${row.providers}</td>
           <td>${row.libraries}</td>
+          <td>${row.openPrCount}</td>
+          <td>${migrationPrs}</td>
           <td>${row.nextAction}</td>
         `;
         tbody.appendChild(tr);
